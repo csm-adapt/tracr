@@ -51,13 +51,8 @@ soa=soa./n;
 stDev_gt = std(gt(:,2));
 gt_median = [median(gt(:,1)),median(gt(:,2))];
 
-%uses median otsu threshold over all images, as well as std dev to create a
-%baseline for the entire sample's images
-
+%uses median otsu
 disp(['Image Processing Complete in ',num2str(toc),'s']);
-
-
-%% Image  Processing and Saving
 
 % Gets outputs directory
 [d1] = uigetdir('Select output file directory');
@@ -78,7 +73,7 @@ for(i=1:n)
     %zeros out values less than determined threshold
     imOUT(imOUT < thresh) = 0;
     
-    %At this point we get v1 of thresholded image, this v1 image is used for
+    %At this point we get v1 of thrsholded image, this v1 image is used for
     %edge detection in the function "fillOutsudeEdge"
     
     %performs edge detection and fills outside edge
