@@ -1,4 +1,4 @@
-% Author: Andy Petersen
+% Author: Andrew Petersen
 % Copyright 2016, ADAPT @ Colorado School of Mines
 
 %Version 1.1
@@ -60,7 +60,18 @@ disp(['Image Processing Complete in ',num2str(toc),'s']);
 %% Image  Processing and Saving
 
 % Gets outputs directory
-[d1] = uigetdir('Select output file directory');
+choice = menu('.tif Saving Options','Save as Multiple Images','Save as Multilayer');
+
+if(choice==0)
+    return;
+end
+
+if(choice == 1)
+    [d1] = uigetdir('Select output file directory');
+elseif(choice == 2)
+    [s1,s2] = uiputfile('Select where to save the multilayered .tif');
+end
+
 
 wb = waitbar(0,'Saving Images');
 tic
@@ -81,14 +92,22 @@ for(i=1:n)
     %At this point we get v1 of thresholded image, this v1 image is used for
     %edge detection in the function "fillOutsudeEdge"
     
-    %performs edge detection and fills outside edge
+    %calls function to perform edge detection and value filling
     imOUT2 = fillOutsideEdge(im,imOUT,0,0);
     
     gtv = multithresh(imOUT2,2);
     imOUT2(imOUT2<=gtv(2))=0;
     
     % writes thresholded image to outpute directory
-    imwrite(imOUT2,fullfile(d1,['image',num2str(i,'%04i'),'.tif']));
+    if(choice == 1)
+        imwrite(imOUT2,fullfile(d1,['image',num2str(i,'%04i'),'.tif']));
+    elseif(choice == 2)
+        if(i==1)
+             imwrite(imOUT2,fullfile(s2,s1));
+        else
+            imwrite(imOUT2,fullfile(s2,s1),'writemode','append');
+        end
+    end
     
     waitbar(i/n,wb,['Saving Images ',num2str(i),'/',num2str(n)]);
 end

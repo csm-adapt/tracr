@@ -1,4 +1,4 @@
-% Author: Andy Petersen
+% Author: Andrew Petersen
 % Copyright 2016, ADAPT @ Colorado School of Mines
 
 % Performs edge detection to find object boundry, then
