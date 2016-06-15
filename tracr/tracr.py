@@ -23,7 +23,8 @@ parent, child = os.path.split(os.path.split(os.path.realpath(__file__))[0])
 sys.path = [parent] + sys.path
 # ###########################
 
-from tracr.actions import ExternalThreshold, Porosity
+from tracr.base import Porosity
+from tracr.actions import ExternalThreshold
 from tracr.io import read, write
 from tracr.metrics.com import pore_com
 
@@ -52,12 +53,18 @@ def threshold(*positional, **named):
 
 
 def centers_of_mass(filename, **kwds):
+    """
+    Calculates the centers of mass of the pores in FILENAME.
+
+    """
     # reads in the tif
     arr = read(filename)
     # determine pore locations
     pores = Porosity(arr)
     # call your COM code
-    return pore_com(pores)
+    com = pore_com(pores)
+    # TODO: write a csv writer
+    write(args.ofile, com)
 #def com(*filenames):
 
 
@@ -129,6 +136,11 @@ if __name__ == '__main__':
             nargs='*', # if there are no other positional parameters
             #nargs=argparse.REMAINDER, # if there are
             help='Files to process.')
+        subparser_com.add_argument('-o',
+            '--output',
+            dest='ofile',
+            default='pore_com.csv'
+            help='Set the output filename for the COM calculation (CSV file).')
         subparser_threshold.set_defaults(
             positional=[],
             action=centers_of_mass)
