@@ -23,7 +23,10 @@ parent, child = os.path.split(os.path.split(os.path.realpath(__file__))[0])
 sys.path = [parent] + sys.path
 # ###########################
 
-from tracr.actions import ExternalThreshold
+from tracr.actions import ExternalThreshold, Porosity
+from tracr.io import read, write
+from tracr.metrics.com import pore_com
+
 import sys, os, textwrap, traceback, argparse
 import time
 import shutil
@@ -46,6 +49,16 @@ def threshold(*positional, **named):
             'exit()";'.format(parent)])
     action = ExternalThreshold(matlab, parameters=[cmd])
     return action()
+
+
+def centers_of_mass(filename, **kwds):
+    # reads in the tif
+    arr = read(filename)
+    # determine pore locations
+    pores = Porosity(arr)
+    # call your COM code
+    return pore_com(pores)
+#def com(*filenames):
 
 
 def main ():
@@ -103,6 +116,22 @@ if __name__ == '__main__':
         subparser_threshold.set_defaults(
             positional=[],
             action=threshold)
+        #
+        # center of mass
+        subparser_com = subparsers.add_parser('com',
+            help='Calculates the centers of mass for all voids in an image ' \
+                 'or collection of images.')
+        # positional parameters
+        subparser_com.add_argument('filenames',
+            metavar='file',
+            dest='positional', # if different than the name of the argument
+            type=str,
+            nargs='*', # if there are no other positional parameters
+            #nargs=argparse.REMAINDER, # if there are
+            help='Files to process.')
+        subparser_threshold.set_defaults(
+            positional=[],
+            action=centers_of_mass)
         #
         args = parser.parse_args()
         # check for correct number of positional parameters
