@@ -10,6 +10,19 @@ EXAMPLES
     TODO: Show some examples of how to use this script.
 """
 
+from __future__ import division
+
+# ###########################
+# ensure tracr is in the path
+import sys,os
+# get the parent directory of the directory that contains this file
+# having resolved all symbolic links, etc. so it points to the original
+# file.
+parent, child = os.path.split(os.path.split(os.path.realpath(__file__))[0])
+# prepend the parent directory to the path
+sys.path = [parent] + sys.path
+# ###########################
+
 from tracr.actions import ExternalThreshold
 import sys, os, textwrap, traceback, argparse
 import time
@@ -17,15 +30,27 @@ import shutil
 #from pexpect import run, spawn
 
 
-def threshold(*args):
-    action = ExternalThreshold('matlab',
-        parameters=['../bin/Thresholding/imageThresholding.m'])
+def threshold(*positional, **named):
+    """
+    Identifies and applies a threshold to images in order to distinguish
+    porosity (low attenuating volumes) from solid (high attenuating volumes).
+    """
+    # args is the global args variable. This is not declared "global args"
+    # because these are immutable in threshold.
+    matlab = getattr(args, 'matlab',
+                     '/Applications/MATLAB_R2015b.app/bin/matlab')
+    cmd = ' '.join([
+        '-nosplash ',
+        '-nodesktop',
+        '-r "run(\'{}/bin/Thresholding/imageThresholding.m\'); ' \
+            'exit()";'.format(parent)])
+    action = ExternalThreshold(matlab, parameters=[cmd])
     return action()
 
 
 def main ():
     global args
-
+    # execute the requested action with required positional arguments
     args.action(*getattr(args, 'positional', []))
 #end 'def main ():'
 
