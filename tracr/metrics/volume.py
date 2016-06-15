@@ -19,5 +19,5 @@ def volumes(intensity_array):
     lbl, num_lbl = label(intensity_array, np.ones((3,3,3)))
     return np.array([
         np.sum(lbl == i)
-        for i in xrange(self.num_lbl)
+        for i in xrange(num_lbl)
     ])
