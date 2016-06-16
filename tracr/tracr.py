@@ -174,7 +174,7 @@ if __name__ == '__main__':
         subparser_volume.add_argument('-o',
             '--output',
             dest='ofile',
-            default='pore_volume.csv'
+            default='pore_volume.csv',
             help='Set the output filename for the volume calculation (CSV file).')
         subparser_threshold.set_defaults(
             positional=[],
