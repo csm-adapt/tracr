@@ -23,7 +23,7 @@ parent, child = os.path.split(os.path.split(os.path.realpath(__file__))[0])
 sys.path = [parent] + sys.path
 # ###########################
 
-from tracr.base import Porosity
+from tracr.structures import Porosity
 from tracr.actions import ExternalThreshold
 from tracr.io import read, write
 from tracr.metrics.com import pore_com
