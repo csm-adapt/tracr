@@ -55,7 +55,6 @@ def threshold(*positional, **named):
 def centers_of_mass(filename, **kwds):
     """
     Calculates the centers of mass of the pores in FILENAME.
-
     """
     # reads in the tif
     arr = read(filename)
