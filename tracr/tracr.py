@@ -26,8 +26,9 @@ sys.path = [parent] + sys.path
 from tracr.structures import Porosity
 from tracr.actions import ExternalThreshold
 from tracr.io import read, write
-from tracr.metrics.com import pore_com
-from tracr.metrics.volume import pore_volume
+from tracr.metrics import pore_com
+from tracr.metrics import pore_volume
+from tracr.transform import binarize
 
 import sys, os, textwrap, traceback, argparse
 import time
@@ -80,7 +81,6 @@ def volumes(filename, **kwds):
     # TODO: write a csv writer
     write(args.ofile, vol)
 #def com(*filenames):
-
 
 def main ():
     global args
