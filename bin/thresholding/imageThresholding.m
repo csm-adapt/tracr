@@ -1,4 +1,3 @@
-% Author: Andy Petersen
 % Author: Andrew Petersen
 % Copyright 2016, ADAPT @ Colorado School of Mines
 
@@ -104,7 +103,15 @@ for(i=1:n)
     imOUT2(imOUT2<=gtv(2))=0;
 
     % writes thresholded image to outpute directory
-    imwrite(imOUT2,fullfile(d1,['image',num2str(i,'%04i'),'.tif']));
+    if(choice == 1)
+        imwrite(imOUT2,fullfile(d1,['image',num2str(i,'%04i'),'.tif']));
+    elseif(choice == 2)
+       if(i==1)
+             imwrite(imOUT2,fullfile(s2,s1));
+        else
+            imwrite(imOUT2,fullfile(s2,s1),'writemode','append');
+       end
+    end
 
     waitbar(i/n,wb,['Saving Images ',num2str(i),'/',num2str(n)]);
 end
