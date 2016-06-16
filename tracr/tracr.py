@@ -63,7 +63,7 @@ def centers_of_mass(filename, **kwds):
     # call your COM code
     com = pore_com(pores)
     # TODO: write a csv writer
-    write(args.ofile, com)
+    write(args.ofile, com, format='csv')
 #def com(*filenames):
 
 
@@ -138,7 +138,7 @@ if __name__ == '__main__':
         subparser_com.add_argument('-o',
             '--output',
             dest='ofile',
-            default='pore_com.csv'
+            default='pore_com.csv',
             help='Set the output filename for the COM calculation (CSV file).')
         subparser_threshold.set_defaults(
             positional=[],
