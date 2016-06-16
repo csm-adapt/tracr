@@ -10,7 +10,7 @@ class Porosity(object)
         self.set_array(arr)
 
     def __iter__(self):
-        for ilab in xrange(self.nlabels):
+        for ilab in xrange(1, self.nlabels+1):
             yield (self.labels == ilab)
 
     def set_array(self, arr, **kwds):
