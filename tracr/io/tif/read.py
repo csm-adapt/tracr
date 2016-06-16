@@ -12,9 +12,6 @@ def read(ifile):
     im = Image.open(ifile)
     intensity_array = np.array([np.array(frame) for frame in ImageSequence.Iterator(im)])
     intensity_array = np.transpose(intensity_array, axes=(1,2,0))
-	if np.max(intensity_array)>1:
-		binarize(intensity_array, threshold=2000, copy=False) # characteristic of air
-	intensity_array = (intensity_array==0)
 	return intensity_array
 #end 'def tif2array(ifile, ofile=None):'
 
