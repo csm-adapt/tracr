@@ -9,15 +9,9 @@ from sklearn.preprocessing import binarize
 
 def read(ifile):
 	# Import image and details
-	im = Image.open(ifile)
-	intensity_array = np.zeros((im.n_frames, im.size[1], im.size[0]), dtype=np.float32)
-	index = 0
-	for frame in ImageSequence.Iterator(im):
-		index = index + 1
-		intensity_array[-index, :, :] = np.array(frame)
-	if np.max(intensity_array)>1:
-		binarize(intensity_array, threshold=2000) # characteristic of air
-	intensity_array = (intensity_array==0)
+    im = Image.open(ifile)
+    intensity_array = np.array([np.array(frame) for frame in ImageSequence.Iterator(im)])
+    intensity_array = np.transpose(intensity_array, axes=(1,2,0))
 	return intensity_array
 #end 'def tif2array(ifile, ofile=None):'
 
