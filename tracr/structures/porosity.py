@@ -1,6 +1,6 @@
 from scipy.ndimage.measurements import label
 
-class Porosity(object)
+class Porosity(object):
     """
     Accepts a 3D intensity array and determines the pore/void
     locations.
