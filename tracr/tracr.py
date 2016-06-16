@@ -23,10 +23,11 @@ parent, child = os.path.split(os.path.split(os.path.realpath(__file__))[0])
 sys.path = [parent] + sys.path
 # ###########################
 
-from tracr.base import Porosity
+from tracr.structures import Porosity
 from tracr.actions import ExternalThreshold
 from tracr.io import read, write
 from tracr.metrics.com import pore_com
+from tracr.metrics.volume import pore_volume
 
 import sys, os, textwrap, traceback, argparse
 import time
@@ -64,6 +65,20 @@ def centers_of_mass(filename, **kwds):
     com = pore_com(pores)
     # TODO: write a csv writer
     write(args.ofile, com)
+#def com(*filenames):
+
+def volumes(filename, **kwds):
+    """
+    Calculates the volumes of the pores in FILENAME.
+    """
+    # reads in the tif
+    arr = read(filename)
+    # determine pore locations
+    pores = Porosity(arr)
+    # call your COM code
+    vol = pore_volume(pores)
+    # TODO: write a csv writer
+    write(args.ofile, vol)
 #def com(*filenames):
 
 
@@ -144,6 +159,26 @@ if __name__ == '__main__':
             positional=[],
             action=centers_of_mass)
         #
+        # void volumes
+        subparser_volume = subparsers.add_parser('volume',
+            help='Calculates the volumes for all voids in an image ' \
+                 'or collection of images.')
+        # positional parameters
+        subparser_volume.add_argument('filenames',
+            metavar='file',
+            dest='positional', # if different than the name of the argument
+            type=str,
+            nargs='*', # if there are no other positional parameters
+            #nargs=argparse.REMAINDER, # if there are
+            help='Files to process.')
+        subparser_volume.add_argument('-o',
+            '--output',
+            dest='ofile',
+            default='pore_volume.csv'
+            help='Set the output filename for the volume calculation (CSV file).')
+        subparser_threshold.set_defaults(
+            positional=[],
+            action=volumes)
         args = parser.parse_args()
         # check for correct number of positional parameters
         #if len(args.filelist) < 1:
