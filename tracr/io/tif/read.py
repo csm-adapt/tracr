@@ -5,14 +5,13 @@
 import sys, os
 import numpy as np
 from PIL import Image, ImageSequence
-from sklearn.preprocessing import binarize
 
 def read(ifile):
 	# Import image and details
     im = Image.open(ifile)
     intensity_array = np.array([np.array(frame) for frame in ImageSequence.Iterator(im)])
     intensity_array = np.transpose(intensity_array, axes=(1,2,0))
-	return intensity_array
+    return intensity_array
 #end 'def tif2array(ifile, ofile=None):'
 
 if __name__ == '__main__':
