@@ -28,13 +28,12 @@ from tracr.actions import ExternalThreshold
 from tracr.io import read, write
 from tracr.metrics import pore_com
 from tracr.metrics import pore_volume
-from tracr.transform import binarize
 
 import sys, os, textwrap, traceback, argparse
 import time
 import shutil
 #from pexpect import run, spawn
-
+#from sklearn.preprocessing import binarize (problems)
 
 def threshold(*positional, **named):
     """
@@ -60,6 +59,9 @@ def centers_of_mass(filename, **kwds):
     """
     # reads in the tif
     arr = read(filename)
+    # binarize the 3D array
+    arr = (arr > args.threshold)
+    #preprocessing.binarize(arr, threshold=args.threshold, copy=False)
     # determine pore locations
     pores = Porosity(arr)
     # call your COM code
@@ -74,6 +76,8 @@ def volumes(filename, **kwds):
     """
     # reads in the tif
     arr = read(filename)
+    # binarize the 3D array
+    binarize(arr, threshold=args.threshold, copy=False)
     # determine pore locations
     pores = Porosity(arr)
     # call your COM code
@@ -110,6 +114,10 @@ if __name__ == '__main__':
                         """))
         # top level parser
         # optional parameters
+        parser.add_argument('--threshold',
+            type=float,
+            default=2000,
+            help='Set a threshold for various processing steps.')
         parser.add_argument('-v',
             '--verbose',
             action='count',
