@@ -156,7 +156,7 @@ if __name__ == '__main__':
             default='pore_com.csv',
             help='Set the output filename for the COM calculation (CSV file).')
         subparser_threshold.set_defaults(
-            positional=[],
+            #positional=[],
             action=centers_of_mass)
         #
         # void volumes
@@ -177,7 +177,7 @@ if __name__ == '__main__':
             default='pore_volume.csv',
             help='Set the output filename for the volume calculation (CSV file).')
         subparser_threshold.set_defaults(
-            positional=[],
+            #positional=[],
             action=volumes)
         args = parser.parse_args()
         # check for correct number of positional parameters
