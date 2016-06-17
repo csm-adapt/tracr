@@ -151,9 +151,8 @@ if __name__ == '__main__':
             help='Calculates the centers of mass for all voids in an image ' \
                  'or collection of images.')
         # positional parameters
-        subparser_com.add_argument('filenames',
+        subparser_com.add_argument('positional',
             metavar='file',
-            dest='positional', # if different than the name of the argument
             type=str,
             nargs='*', # if there are no other positional parameters
             #nargs=argparse.REMAINDER, # if there are
@@ -164,7 +163,7 @@ if __name__ == '__main__':
             default='pore_com.csv',
             help='Set the output filename for the COM calculation (CSV file).')
         subparser_threshold.set_defaults(
-            #positional=[],
+            positional=[],
             action=centers_of_mass)
         #
         # void volumes
@@ -172,9 +171,8 @@ if __name__ == '__main__':
             help='Calculates the volumes for all voids in an image ' \
                  'or collection of images.')
         # positional parameters
-        subparser_volume.add_argument('filenames',
+        subparser_volume.add_argument('positional',
             metavar='file',
-            dest='positional', # if different than the name of the argument
             type=str,
             nargs='*', # if there are no other positional parameters
             #nargs=argparse.REMAINDER, # if there are
@@ -185,7 +183,7 @@ if __name__ == '__main__':
             default='pore_volume.csv',
             help='Set the output filename for the volume calculation (CSV file).')
         subparser_threshold.set_defaults(
-            #positional=[],
+            positional=[],
             action=volumes)
         args = parser.parse_args()
         # check for correct number of positional parameters
