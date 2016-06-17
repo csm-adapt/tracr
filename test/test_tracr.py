@@ -26,4 +26,3 @@ class TestClass: # keep this the same
 	def tearDown(self):
 		# clean up
 		pass
-
