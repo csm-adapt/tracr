@@ -3,4 +3,4 @@
 #
 
 def write(filename, arr):
-    pass
+    raise NotImplementedError('Writing TIF files is not yet available.')
