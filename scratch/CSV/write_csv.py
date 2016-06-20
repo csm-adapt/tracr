@@ -12,33 +12,36 @@ files = os.listdir(path)
 px_dict = pixel_dict()
 #np.seterr(divide='ignore', invalid='ignore')
 
-for file in files:
-    if file.endswith(".tif"):
+for ifile in files:
+    print('Processing {}...'.format(ifile))
+    if ifile.endswith(".tif"):
 
-        print(file)
-        #get pixel sizes
-        [name, ext] = os.path.splitext(file)
+        print('getting pixel sizes')
+        [name, ext] = os.path.splitext(ifile)
         px = px_dict[name]
 
-        # convert to array
-        intensity_array = read(file)
+        print('converting to array')
+        intensity_array = read(ifile)
 
-        # do final thresholding (1's and 0's)
+        print('binarizing')
         intensity_array = (intensity_array < 2000)
 
-        # get void stats
+        print('getting void labels')
         lbl, num = label(intensity_array, np.ones((3,3,3)))
 
+        print('getting coms')
         com = center_of_mass(intensity_array, lbl, np.arange(2,num))
         com = np.asarray(com)
         com = px*com
 
+        print('getting volumes')
         volume = np.array([
             np.sum(lbl == i)
             for i in range(2,num)
         ])
         volume = px*px*px*volume
 
+        print('writing file')
         np.save(name+'com', com)
         np.save(name+'vol', volume)
         table = np.concatenate((np.arange(2,num).reshape((num-2,1)),com,volume.reshape((num-2,1))))
