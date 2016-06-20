@@ -6,6 +6,7 @@ import numpy as np
 from pixel_sizes import pixel_dict
 from scipy.ndimage.measurements import label, center_of_mass
 from read import read
+from itertools import product
 
 path = '.'
 files = os.listdir(path)
@@ -30,8 +31,13 @@ for ifile in files:
         lbl, num = label(intensity_array, np.ones((3,3,3)))
 
         print('find blobs')
-        blobs = [(i, np.argwhere(lbl==i)) for i in range(2,num+1)]
-
+        #blobs = [(i, np.argwhere(lbl==i)) for i in range(2,num+1)]
+        blobs = (num-1)*[[]]
+        shape = intensity_array.shape
+        for ijk in product(range(shape[0]), range(shape[1]), range(shape[2])):
+            l = lbl[ijk]
+            if l < 2: continue # skip sample and ambient air
+            blobs[l-2].append(ijk)
 
         print('getting coms')
         com = np.array([np.mean(b[1], axis=0) for b in blobs])
@@ -40,7 +46,7 @@ for ifile in files:
         com = px*com
 
         print('getting volumes')
-        volume = np.array([b[1].shape[0] for b in blobs])        
+        volume = np.array([b[1].shape[0] for b in blobs])
         # volume = np.array([
         #     np.sum(lbl == i)
         #     for i in range(2,num)
