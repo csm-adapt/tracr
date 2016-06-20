@@ -7,33 +7,38 @@ from pixel_sizes import pixel_dict
 from scipy.ndimage.measurements import label, center_of_mass
 from read import read
 
-path = './*.tif'
+path = '.'
 files = os.listdir(path)
 px_dict = pixel_dict()
 
 for file in files:
+    if file.endswith(".tif"):
 
-    #get pixel sizes
-    px = px_dict[file]
+        print(file)
+        #get pixel sizes
+        [name, ext] = os.path.splitext(file)
+        px = px_dict[name]
 
-    # convert to array
-    intensity_array = read(file)
+        # convert to array
+        intensity_array = read(file)
 
-    # do final thresholding (1's and 0's)
-    intensity_array = (intensity_array < 2000)
+        # do final thresholding (1's and 0's)
+        intensity_array = (intensity_array < 2000)
 
-    # get void stats
-    lbl, num = label(intensity_array, np.ones((3,3,3)))
+        # get void stats
+        lbl, num = label(intensity_array, np.ones((3,3,3)))
 
-    com = center_of_mass(intensity_array, lbl, np.arange(num))
-    com = np.asarray(com)
-    com = px*com
+        com = center_of_mass(intensity_array, lbl, np.arange(num))
+        com = np.asarray(com)
+        com = px*com
 
-    volume = np.array([
-        np.sum(lbl == i)
-        for i in xrange(num)
-    ])
-    volume = px*px*px*volume
+        volume = np.array([
+            np.sum(lbl == i)
+            for i in np.arange(num)
+        ])
+        volume = px*px*px*volume
 
-    table = np.concatenate((np.arange(num),com,volume))
-    np.savetxt(file+'.csv', table, delimeter=',')
+        np.save(name+'com', com)
+        np.save(name+'vol', volume)
+        table = np.concatenate((np.arange(num),com,volume))
+        np.savetxt(name+'.csv', table, delimeter=',')
