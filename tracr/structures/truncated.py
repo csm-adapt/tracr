@@ -71,6 +71,10 @@ class TruncatedSphere(object):
         self.vintegrand.argtypes = (ctypes.c_int, ctypes.c_double)
 
     @property
+    def dim(self):
+        return 3
+
+    @property
     def lower(self):
         return self._lower
 
@@ -94,6 +98,11 @@ class TruncatedSphere(object):
         """See docstring for volume."""
         Vout = self.volume(Rout, center=center, **kwds)
         Vin = self.volume(Rin, center=center, **kwds)
+        if isinstance(Vout, tuple) or isinstance(Vin, tuple):
+            msg = '\n'.join([
+                "Vout: {}, Rout: {}".format(Vout, Rout),
+                "Vin: {}, Rin: {}".format(Vin, Rin)])
+            raise ValueError(msg)
         return Vout - Vin
 
     def volume(self, R, center=np.zeros(3), **kwds):
@@ -109,37 +118,13 @@ class TruncatedSphere(object):
         Keywords
         --------
         :center, array-like: Center of the sphere.
-        :kwds, dict: Keywords passed to mcmiser, e.g.
-
-            nprocs, number of processors to use.
-            npoints, number of points for the MC integration.
         """
+        R = float(R)
         if np.isclose(R, 0):
             return 0
-        def f_mcmiser(phi, theta, r):
-            """Integrand for calculating the volume of a bounded sphere."""
-            rcf, rsf = r*np.cos(phi), r*np.sin(phi)
-            cq, sq = np.cos(theta), np.sin(theta)
-            if rcf < zmin: return 0
-            if rcf > zmax: return 0
-            if (xmin < rsf*cq < xmax) and (ymin < rsf*sq < ymax):
-                return r*rsf
-            else:
-                return 0
-        def f_tanh(phi, theta, r):
-            """Integrand for calculating the volume of a bounded sphere."""
-            rcf, rsf = r*np.cos(phi), r*np.sin(phi)
-            cq, sq = np.cos(theta), np.sin(theta)
-            alpha = 10
-            xfactor = (1 + np.tanh(alpha*(rsf*cq-xmin)))/2 * \
-                      (1 - (1 + np.tanh(alpha*(rsf*cq-xmax)))/2)
-            yfactor = (1 + np.tanh(alpha*(rsf*sq-ymin)))/2 * \
-                      (1 - (1 + np.tanh(alpha*(rsf*sq-ymax)))/2)
-            zfactor = (1 + np.tanh(alpha*(rcf-zmin)))/2 * \
-                      (1 - (1 + np.tanh(alpha*(rcf-zmax)))/2)
-            return xfactor*yfactor*zfactor*r*rsf
         assert len(center) == 3
         center = np.asarray(center)
+        # distance from center to edge
         xmin, ymin, zmin = self.lower - center
         xmax, ymax, zmax = self.upper - center
         # Optimize
@@ -161,25 +146,28 @@ class TruncatedSphere(object):
         heights = height((xmin, ymin, zmin, xmax, ymax, zmax))
         if np.all(np.isclose(fmin, 0.0)) and np.all(np.isclose(fmax, 0.0)):
             # all polar angles are zero --> sphere
-            return 4./3.*np.pi*R**3
-        elif np.all([(a + b <= np.pi/2) for a,b in combinations(fmin, 2)]) and \
-             np.all([(a + b <= np.pi/2) for a,b in combinations(fmax, 2)]):
+            vol = 4./3.*np.pi*R**3,
+        elif np.all([(fmin[i] + fmin[j] <= np.pi/2)
+                     for i,j in combinations(range(self.dim), 2)]) and \
+             np.all([(fmin[i] + fmax[j] <= np.pi/2)
+                     for i,j in combinations(range(self.dim), 2)]) and \
+             np.all([(fmax[i] + fmin[j] <= np.pi/2)
+                     for i,j in combinations(range(self.dim), 2)]) and \
+             np.all([(fmax[i] + fmax[j] <= np.pi/2)
+                     for i,j in combinations(range(self.dim), 2)]):
             # non-zero polar angles, but no overlapping caps
             vol = 4./3.*np.pi*R**3
             for h in heights:
                 vol -= np.pi/3 * h**2 * (3*R - h)
+        else:
+            # general -- and generally expensive -- method
+            vol, err = integrate.nquad(self.vintegrand,
+                [[0, np.pi], [0, 2*np.pi], [0, R]],
+                args=(8., xmin, ymin, zmin, xmax, ymax, zmax))
+        # return the value. It is showing up as a tuple. I don't know why
+        # and need to figure that out, but only after I get this running.
+        try:
+            return vol[0]
+        except TypeError:
             return vol
-        # general -- and generally expensive -- method
-        # # monte carlo approach for calculating the volume
-        # kwds['npoints'] = kwds.get('npoints', 5e5)
-        # kwds['nprocs'] = kwds.get('nprocs', 1)
-        # vol, err = mcmiser(lambda fqr: f_mcmiser(*fqr),
-        #     xl=(0., 0., 0.),
-        #     xu=(np.pi, 2*np.pi, R),
-        #     **kwds)
-        # return vol
-        vol, err = integrate.nquad(self.vintegrand,
-            [[0, np.pi], [0, 2*np.pi], [0, R]],
-            args=(8., xmin, ymin, zmin, xmax, ymax, zmax))
-        return vol
 #end 'class TruncatedSphere(object):'

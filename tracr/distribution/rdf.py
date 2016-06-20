@@ -72,9 +72,6 @@ class RDF(object):
         """
         rho = float(len(self.points))/np.prod(self.width)
         assert rho > 0, 'Calculated rho ({}) is invalid'.format(rho)
-        rmaxsq = self.rmax**2
-        # shell_vol = 4*np.pi/3 * ((self.step*np.arange(1,len(self._rdf)+1))**3 -
-        #                          (self.step*np.arange(len(self._rdf)))**3)
         # reset RDF
         self._rdf[:] = 0
         # create periodic duplicates of the point cloud to facilitate
@@ -85,7 +82,7 @@ class RDF(object):
         points = np.copy(self.points)
         for i in range(len(self.is_periodic())):
             if not self.is_periodic()[i]: continue
-            trans = self.lower[axis]
+            trans = self.upper[i] - self.lower[i]
             points = np.concatenate((points - trans, points, points + trans))
         tree = KDTree(points, leafsize=3)
         # find neighbors
@@ -113,7 +110,17 @@ class RDF(object):
                 if vol[idx] is None:
                     # calculate the volume of this annulus
                     Rlo, Rhi = self.step*idx, self.step*(idx+1)
-                    vol[idx] = self._truncatedSphere.shell(Rlo, Rhi, pt1, **kwds)
+                    try:
+                        vol[idx] = self._truncatedSphere.shell(Rlo, Rhi, pt1, **kwds)
+                    except Exception, e:
+                        msg = 'Volume calculation failed at annulus ' \
+                              '[{}, {}] around point {}.'.format(Rlo, Rhi, pt1)
+                        raise type(e)(msg)
+                    if np.isclose(vol[idx], 0):
+                        msg = 'Volume is too close to zero ({}) at ' \
+                              'annulus [{}, {}] around point {}.'.format(
+                                vol[idx], Rlo, Rhi, pt1)
+                        raise RuntimeError(msg)
                 # increment the number of atoms in this annulus
                 num[idx] += 1
             vol = np.array([(1. if (v is None) else v) for v in vol])
