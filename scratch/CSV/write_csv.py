@@ -34,10 +34,19 @@ for ifile in files:
         #blobs = [(i, np.argwhere(lbl==i)) for i in range(2,num+1)]
         blobs = (num-1)*[[]]
         shape = intensity_array.shape
+        counter = 0
+        niter = np.product(shape)
         for ijk in product(range(shape[0]), range(shape[1]), range(shape[2])):
             l = lbl[ijk]
             if l < 2: continue # skip sample and ambient air
             blobs[l-2].append(ijk)
+            counter += 1
+            if niter/counter == niter//counter:
+                if niter//counter % 10 == 0:
+                    print('|{}%|'.format(niter//counter), end='')
+                elif niter//counter % 2 == 0:
+                    print('-', end='')
+        print('')
 
         print('getting coms')
         com = np.array([np.mean(b[1], axis=0) for b in blobs])
