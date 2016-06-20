@@ -20,17 +20,3 @@ class TestClass: # keep this the same
         # run test two
         assert 2 == 2 # assertion, if false, fails
         pass
-
-<<<<<<< HEAD
-	# ...
-
-	def tearDown(self):
-		# clean up
-		pass
-=======
-    # ...
-
-    def tearDown(self):
-        # clean up
-        pass
->>>>>>> b1bcc11da31366224e0da14d28dcd52a34375c4d
