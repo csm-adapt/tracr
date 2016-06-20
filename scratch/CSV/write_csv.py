@@ -29,16 +29,22 @@ for ifile in files:
         print('getting void labels')
         lbl, num = label(intensity_array, np.ones((3,3,3)))
 
+        print('find blobs')
+        blobs = [(i, np.argwhere(lbl==i)) for i in range(2,num+1)]
+
+
         print('getting coms')
-        com = center_of_mass(intensity_array, lbl, np.arange(2,num))
-        com = np.asarray(com)
+        com = np.array([np.mean(b[1], axis=0) for b in blobs])
+        # com = center_of_mass(intensity_array, lbl, np.arange(2,num))
+        # com = np.asarray(com)
         com = px*com
 
         print('getting volumes')
-        volume = np.array([
-            np.sum(lbl == i)
-            for i in range(2,num)
-        ])
+        volume = np.array([b[1].shape[0] for b in blobs])        
+        # volume = np.array([
+        #     np.sum(lbl == i)
+        #     for i in range(2,num)
+        # ])
         volume = px*px*px*volume
 
         print('writing file')
