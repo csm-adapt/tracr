@@ -76,7 +76,7 @@ elseif(choice == 2)
     [s1,s2] = uiputfile('Select where to save the multilayered .tif');
 end
 
-
+csa = NaN(n,1);
 wb = waitbar(0,'Saving Images');
 tic
 for(i=1:n)
@@ -97,7 +97,7 @@ for(i=1:n)
     %edge detection in the function "fillOutsudeEdge"
 
     %performs edge detection and fills outside edge
-    imOUT2 = fillOutsideEdge(im,imOUT,0,0);
+    [imOUT2,csa(i)] = fillOutsideEdge(im,imOUT,0,0);
 
     gtv = multithresh(imOUT2,2);
     imOUT2(imOUT2<=gtv(2))=0;
@@ -117,6 +117,11 @@ for(i=1:n)
 end
 close(wb)
 disp(['Image Saving Complete in ',num2str(toc),'s']);
+
+%Writes the cross sectional area per image as a csv file
+area = size(im,1)*size(im,2)-csa;
+[fparts1,fparts2,fparts3] = fileparts(s1);
+csvwrite(fullfile(s2,[fparts2,'_csa.csv']),area)
 
 % cleanup
 % return the original directory (may be unnecessary...)
