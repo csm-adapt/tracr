@@ -82,6 +82,7 @@ for ifile in sys.argv[1:]:
         com = com - part_com
         # com = center_of_mass(intensity_array, lbl, np.arange(2,num))
         # com = np.asarray(com)
+        # convert to distance units (um)
         com = px*com
 
         print('getting volumes')
