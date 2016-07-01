@@ -60,8 +60,7 @@ def centers_of_mass(filename, **kwds):
     # reads in the tif
     arr = read(filename)
     # binarize the 3D array
-    arr = (arr > args.threshold)
-    #preprocessing.binarize(arr, threshold=args.threshold, copy=False)
+    arr = (arr < args.threshold)
     # determine pore locations
     pores = Porosity(arr)
     # call your COM code

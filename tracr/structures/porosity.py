@@ -45,6 +45,9 @@ class Porosity(object):
         self._nlabels = num
 
     def exclude_largest(self):
+        """
+        This eliminates the ambient air 'pore'
+        """
         mask = np.copy(self.array)
         vols = [np.sum(p) for p in self]
         ilarge = np.argmax(vols)+1 # pore types are 1-indexed
