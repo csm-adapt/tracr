@@ -76,11 +76,29 @@ def volumes(filename, **kwds):
     # reads in the tif
     arr = read(filename)
     # binarize the 3D array
-    binarize(arr, threshold=args.threshold, copy=False)
+    arr = (arr < args.threshold)
+    #binarize(arr, threshold=args.threshold, copy=False)
     # determine pore locations
     pores = Porosity(arr)
     # call your COM code
     vol = pore_volume(pores)
+    # TODO: write a csv writer
+    write(args.ofile, vol)
+#def com(*filenames):
+
+def surface_distances(filename, **kwds):
+    """
+    Calculates the void-surface distances
+    """
+    # reads in the tif
+    arr = read(filename)
+    # send array to surface finder
+    shell = sample_surface(arr)
+    # get void coms
+    pores = Porosity(arr)
+    com = pore_com(pores)
+    # send surface and void COMS to distance.py
+    dists = distance(com, shell)
     # TODO: write a csv writer
     write(args.ofile, vol)
 #def com(*filenames):
