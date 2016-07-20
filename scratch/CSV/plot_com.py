@@ -42,7 +42,7 @@ def plot_com(filename):
     partCOM = np.mean(np.argwhere(~larr), axis=0).astype(int)
     # find pore COM
     #poreCOM = csv[:,1:4].astype(int) + partCOM
-    csv[:,3] = csv[:,3].astype(int)
+    #csv[:,3] = csv[:,3].astype(int)
     poreCOM = csv[:,1:4] + partCOM
     # plot another pore
     fig = plt.figure()
@@ -61,8 +61,9 @@ def plot_com(filename):
         x,y,z = psub[idx]
         print("Pore volume {} um^3 at ({}, {}, {})".format(dsub[idx, 4], x, y, z))
         plt.cla()
-        plt.imshow(arr[:,::-1,z], cmap='bone')
-        plt.scatter([x], [y], s=10, c='r')
+        plt.imshow(arr[:,:,z], cmap='bone')
+        plt.scatter([y],[x],s=10,c='r')
+        #plt.scatter([x], [y], s=10, c='r')
         #plt.xticks([])
         #plt.yticks([])
         plt.show()
@@ -74,6 +75,9 @@ def main():
         sys.exit(1)
     # read .tif
     plot_com(sys.argv[1])
+
+# plt.imshow(intensity_array[320,:,:], cmap='bone')
+# plt.scatter(544.5, 1024-325, s=10, c='r')
 
 
 if __name__ == '__main__':
