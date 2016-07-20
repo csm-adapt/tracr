@@ -1,18 +1,13 @@
 #!/usr/bin/env python
-"""
-A script that converts ORS saved tif frames to an intensity voxel array
-The resulting array is 1000 x 1024 in cross section direction and 1014 "tall"
-"""
+## A script that converts ORS saved tif frames to an intensity voxel array
+## The resulting array is 1000 x 1024 in cross section direction and 1014 "tall"
 
 import sys, os
 import numpy as np
 from PIL import Image, ImageSequence
 
 def read(ifile):
-	"""
-    Import image and details. Create 3D array layer by layer using Iterator.
-    Array is reshaped for more intuitive indexing (image vs numpy indexing).
-    """
+	# Import image and details
     im = Image.open(ifile)
     intensity_array = np.array([np.array(frame) for frame in ImageSequence.Iterator(im)])
     intensity_array = np.transpose(intensity_array, axes=(1,2,0))

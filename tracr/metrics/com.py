@@ -15,5 +15,6 @@ def com(obj):
 
 
 def pore_com(porosity):
-    # your masterful COM code
+    # INPUT: porosity object
+    # OUTPUT: list of COM coordinates
     return center_of_mass(porosity.array, porosity.labels)

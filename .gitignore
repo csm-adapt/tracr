@@ -45,6 +45,10 @@ coverage.xml
 *,cover
 .hypothesis/
 
+# Test data formats
+*.csv
+*.tif
+
 # Translations
 *.mo
 *.pot

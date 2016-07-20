@@ -7,7 +7,7 @@
 %Note: Works best with fully convex shapes, any shaped with partial
 %concavitiy may cause unexpected results
 
-function imOut =  fillOutsideEdge(im,imEdge,fillValue,transitionsUntilFill)
+function [imOut, count] =  fillOutsideEdge(im,imEdge,fillValue,transitionsUntilFill)
 
 %INPUTS:
 % im = input image
@@ -45,10 +45,12 @@ for(i=1:rows)
     tcount=0;
 end
 
+count=0;
 for(i=1:rows)
     for(j=1:cols)
         if(transitions(i,j) == transitionsUntilFill || (transitions(i,end)-transitions(i,j)) == transitionsUntilFill)
             imOut(i,j) = fillValue;
+            count = count+1;
         end
     end
 end
