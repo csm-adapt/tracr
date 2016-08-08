@@ -15,6 +15,7 @@ import sys, os, glob
 import numpy as np
 import json
 
+
 def scrape_data(plate_list=['1']):
     # Retrieve process parameters
     build_data = np.genfromtxt('process_parameters.csv', delimiter=',', dtype=None)
@@ -35,6 +36,8 @@ def scrape_data(plate_list=['1']):
     col_idx = np.argwhere(build_data[0,:]=='col')[0][0]
     row_idx = np.argwhere(build_data[0,:]=='row')[0][0]
     plate_idx = np.argwhere(build_data[0,:]=='plate')[0][0]
+    RD_idx = np.argwhere(build_data[0,:]=='RD')[0][0]
+    TD_idx = np.argwhere(build_data[0,:]=='TD')[0][0]
 
     # Rename the numbers in processed_parts (remove 0's)
     abbrev_parts = []
@@ -46,13 +49,29 @@ def scrape_data(plate_list=['1']):
 
     # Extract relevant samples only and add defect parameters
     input_data = []
-    defect_data = np.concatenate((np.reshape(abbrev_parts,(len(abbrev_parts),1)),
-        median_nn), axis=1)
+    defect_data = np.concatenate((np.reshape(abbrev_parts,
+                                    (len(abbrev_parts),1)),median_nn), axis=1)
     for sample in build_data:
         if any(y==sample[plate_idx] for y in plate_list):
             if (any(x==(sample[col_idx]+sample[row_idx]) for x in abbrev_parts)):
                 # THIS ONLY WORKS FOR ONE PLATE ATM
-                match = np.argwhere((sample[col_idx]+sample[row_idx])==defect_data[:,0])
+                match = np.argwhere((sample[col_idx]+sample[row_idx])
+                                        ==defect_data[:,0])
                 sample = np.append(sample, defect_data[match,1:])
                 input_data.append(sample)
+    input_data = np.vstack(input_data)
     return input_data
+
+
+def pca(input_data, RD_idx=18, TD_idx=19):
+    # Perform a PCA/PCR on spatial parameters and defect parameters
+    spatial_data = np.zeros((len(input_data), 4))
+    RD, TD = input_data[:,RD_idx], input_data[:,TD_idx]
+    center = [(np.max(RD)-np.min(RD))/2, (np.max(TD)-np.min(TD))/2]
+    # DIVIDE BY STD
+    for i in range(len(input_data)):
+
+
+        spatial_data[i,:] = [input_data[i,2]+input_data[i,10],
+                                input_data[i,RD_idx], input_data[i,TD_idx]],
+                                ()
