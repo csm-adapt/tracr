@@ -48,6 +48,8 @@ coverage.xml
 # Test data formats
 *.csv
 *.tif
+*.pdf
+*.json
 
 # Translations
 *.mo
