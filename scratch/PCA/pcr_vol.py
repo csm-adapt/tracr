@@ -18,27 +18,27 @@ import json
 
 def scrape_data(plate_list=['1']):
     # Retrieve process parameters
-    build_data = np.genfromtxt('process_parameters.csv', delimiter=',', dtype=None)
-
+    build_data = np.genfromtxt('process_parameters.csv', delimiter=',',
+                                    dtype=None)
     # Retrieve defect parameters
     processed_parts = []
-    median_nn = []
+    volume_mean = []
     for f in glob.glob('*.json'):
         data = json.loads(open(f, 'rb').read())
         # Get part name and median nn
         ifile = os.path.basename(f)
         processed_parts.append(os.path.splitext(ifile)[0][:3])
-        median_nn.append(data['median nearest neighbor distance']['values'])
+        volume_mean.append(np.mean(data['volume']['values']))
     processed_parts = np.reshape(processed_parts, (len(processed_parts),1))
-    median_nn = np.reshape(median_nn, (len(median_nn),1))
-
-    # Identify the column (letter), row (number), and plate fields
+    volume_mean = np.reshape(volume_mean, (len(volume_mean),1))
+    # Identify columns of interest
     col_idx = np.argwhere(build_data[0,:]=='col')[0][0]
     row_idx = np.argwhere(build_data[0,:]=='row')[0][0]
     plate_idx = np.argwhere(build_data[0,:]=='plate')[0][0]
     RD_idx = np.argwhere(build_data[0,:]=='RD')[0][0]
     TD_idx = np.argwhere(build_data[0,:]=='TD')[0][0]
-
+    polar_idx = np.argwhere(build_data[0,:]=='polar')[0][0]
+    azimuth_idx = np.argwhere(build_data[0,:]=='azimuth')[0][0]
     # Rename the numbers in processed_parts (remove 0's)
     abbrev_parts = []
     for j in processed_parts:
@@ -46,11 +46,10 @@ def scrape_data(plate_list=['1']):
             abbrev_parts.append(j[0][0]+j[0][2])
         else:
             abbrev_parts.append(j[0])
-
     # Extract relevant samples only and add defect parameters
     input_data = []
     defect_data = np.concatenate((np.reshape(abbrev_parts,
-                                    (len(abbrev_parts),1)),median_nn), axis=1)
+                                    (len(abbrev_parts),1)),volume_mean), axis=1)
     for sample in build_data:
         if any(y==sample[plate_idx] for y in plate_list):
             if (any(x==(sample[col_idx]+sample[row_idx]) for x in abbrev_parts)):
@@ -63,15 +62,36 @@ def scrape_data(plate_list=['1']):
     return input_data
 
 
-def pca(input_data, RD_idx=18, TD_idx=19):
-    # Perform a PCA/PCR on spatial parameters and defect parameters
-    spatial_data = np.zeros((len(input_data), 4))
-    RD, TD = input_data[:,RD_idx], input_data[:,TD_idx]
-    center = [(np.max(RD)-np.min(RD))/2, (np.max(TD)-np.min(TD))/2]
-    # DIVIDE BY STD
-    for i in range(len(input_data)):
+def extract(input_data, RD_idx=18, TD_idx=19, polar_idx=8, azimuth_idx=16):
+    ## Perform a PCA/PCR on certain spatial and defect parameters
+    # Organize and normalize process parameters
+    RD, TD = [np.asarray(input_data[:,RD_idx]).astype(np.float),
+                    np.asarray(input_data[:,TD_idx]).astype(np.float)]
+    polar, azimuth = [np.asarray(input_data[:,polar_idx]).astype(np.float),
+                    np.asarray(input_data[:,azimuth_idx]).astype(np.float)]
+    # SHIFT TO ORIGIN
+    center = 123
+    radial = np.sqrt((RD-center)**2+(TD-center)**2)
+    volume_mean = input_data[:,-1].astype(np.float)
+    RD, TD, radial, polar, azimuth, med_nn = [normalize(RD), normalize(TD),
+                                        normalize(radial), normalize(polar),
+                                    normalize(azimuth), normalize(volume_mean)]
+    spatial_data = np.column_stack((RD, TD, radial, polar, azimuth, volume_mean))
+    return spatial_data
 
 
-        spatial_data[i,:] = [input_data[i,2]+input_data[i,10],
-                                input_data[i,RD_idx], input_data[i,TD_idx]],
-                                ()
+def pca(data):
+    # Perform SVD of process parametersa
+    u, s, v = np.linalg.svd(data[:,:-1], full_matrices=False)
+    s = s*np.eye(len(s))
+    T = np.dot(u,s)
+    # Perform regression
+    y = data[:,-1]
+    b = np.dot(np.linalg.inv(np.dot(T.T, T)), np.dot(T.T, y))
+    # Estimate error
+    e = y - np.dot(T,b)
+    return b, T, y
+
+
+def normalize(iarray):
+    return (iarray-np.mean(iarray))/np.std(iarray)
