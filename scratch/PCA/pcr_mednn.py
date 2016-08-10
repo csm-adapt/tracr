@@ -90,7 +90,7 @@ def pcr(data):
     b = np.dot(np.linalg.inv(np.dot(T.T, T)), np.dot(T.T, y))
     # Estimate error
     e = y - np.dot(T,b)
-    return b, e, T
+    return u, s, v, b, T, e
 
 
 def normalize(iarray):
