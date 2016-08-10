@@ -68,19 +68,19 @@ def extract(input_data, RD_idx=18, TD_idx=19, polar_idx=8, azimuth_idx=16):
     RD, TD = [np.asarray(input_data[:,RD_idx]).astype(np.float),
                     np.asarray(input_data[:,TD_idx]).astype(np.float)]
     polar, azimuth = [np.asarray(input_data[:,polar_idx]).astype(np.float),
-                    np.asarray(input_data[:,azimuth_idx]).astype(np.float)]
+                        np.asarray(input_data[:,azimuth_idx]).astype(np.float)]
     # SHIFT TO ORIGIN
     center = 123
     radial = np.sqrt((RD-center)**2+(TD-center)**2)
     volume_mean = input_data[:,-1].astype(np.float)
-    RD, TD, radial, polar, azimuth, med_nn = [normalize(RD), normalize(TD),
+    RD, TD, radial, polar, azimuth, volume_mean = [normalize(RD), normalize(TD),
                                         normalize(radial), normalize(polar),
                                     normalize(azimuth), normalize(volume_mean)]
     spatial_data = np.column_stack((RD, TD, radial, polar, azimuth, volume_mean))
     return spatial_data
 
 
-def pca(data):
+def pcr(data):
     # Perform SVD of process parametersa
     u, s, v = np.linalg.svd(data[:,:-1], full_matrices=False)
     s = s*np.eye(len(s))

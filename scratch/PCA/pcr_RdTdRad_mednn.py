@@ -37,8 +37,6 @@ def scrape_data(plate_list=['1']):
     plate_idx = np.argwhere(build_data[0,:]=='plate')[0][0]
     RD_idx = np.argwhere(build_data[0,:]=='RD')[0][0]
     TD_idx = np.argwhere(build_data[0,:]=='TD')[0][0]
-    polar_idx = np.argwhere(build_data[0,:]=='polar')[0][0]
-    azimuth_idx = np.argwhere(build_data[0,:]=='azimuth')[0][0]
     # Rename the numbers in processed_parts (remove 0's)
     abbrev_parts = []
     for j in processed_parts:
@@ -62,21 +60,19 @@ def scrape_data(plate_list=['1']):
     return input_data
 
 
-def extract(input_data, RD_idx=18, TD_idx=19, polar_idx=8, azimuth_idx=16):
+def extract(input_data, RD_idx=18, TD_idx=19):
     ## Perform a PCA/PCR on certain spatial and defect parameters
     # Organize and normalize process parameters
     RD, TD = [np.asarray(input_data[:,RD_idx]).astype(np.float),
                     np.asarray(input_data[:,TD_idx]).astype(np.float)]
-    polar, azimuth = [np.asarray(input_data[:,polar_idx]).astype(np.float),
-                        np.asarray(input_data[:,azimuth_idx]).astype(np.float)]
+
     # SHIFT TO ORIGIN
     center = 123
     radial = np.sqrt((RD-center)**2+(TD-center)**2)
     med_nn = input_data[:,-1].astype(np.float)
-    RD, TD, radial, polar, azimuth, med_nn = [normalize(RD), normalize(TD),
-                                            normalize(radial), normalize(polar),
-                                            normalize(azimuth), normalize(med_nn)]
-    spatial_data = np.column_stack((RD, TD, radial, polar, azimuth, med_nn))
+    RD, TD, radial, med_nn = [normalize(RD), normalize(TD), normalize(radial),
+                                normalize(med_nn)]
+    spatial_data = np.column_stack((RD, TD, radial, med_nn))
     return spatial_data
 
 

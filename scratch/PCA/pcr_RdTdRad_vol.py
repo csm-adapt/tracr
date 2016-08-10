@@ -22,23 +22,21 @@ def scrape_data(plate_list=['1']):
                                     dtype=None)
     # Retrieve defect parameters
     processed_parts = []
-    median_nn = []
+    volume_mean = []
     for f in glob.glob('*.json'):
         data = json.loads(open(f, 'rb').read())
         # Get part name and median nn
         ifile = os.path.basename(f)
         processed_parts.append(os.path.splitext(ifile)[0][:3])
-        median_nn.append(data['median nearest neighbor distance']['values'])
+        volume_mean.append(np.mean(data['volume']['values']))
     processed_parts = np.reshape(processed_parts, (len(processed_parts),1))
-    median_nn = np.reshape(median_nn, (len(median_nn),1))
+    volume_mean = np.reshape(volume_mean, (len(volume_mean),1))
     # Identify columns of interest
     col_idx = np.argwhere(build_data[0,:]=='col')[0][0]
     row_idx = np.argwhere(build_data[0,:]=='row')[0][0]
     plate_idx = np.argwhere(build_data[0,:]=='plate')[0][0]
     RD_idx = np.argwhere(build_data[0,:]=='RD')[0][0]
     TD_idx = np.argwhere(build_data[0,:]=='TD')[0][0]
-    polar_idx = np.argwhere(build_data[0,:]=='polar')[0][0]
-    azimuth_idx = np.argwhere(build_data[0,:]=='azimuth')[0][0]
     # Rename the numbers in processed_parts (remove 0's)
     abbrev_parts = []
     for j in processed_parts:
@@ -49,7 +47,7 @@ def scrape_data(plate_list=['1']):
     # Extract relevant samples only and add defect parameters
     input_data = []
     defect_data = np.concatenate((np.reshape(abbrev_parts,
-                                    (len(abbrev_parts),1)),median_nn), axis=1)
+                                    (len(abbrev_parts),1)),volume_mean), axis=1)
     for sample in build_data:
         if any(y==sample[plate_idx] for y in plate_list):
             if (any(x==(sample[col_idx]+sample[row_idx]) for x in abbrev_parts)):
@@ -62,21 +60,19 @@ def scrape_data(plate_list=['1']):
     return input_data
 
 
-def extract(input_data, RD_idx=18, TD_idx=19, polar_idx=8, azimuth_idx=16):
+def extract(input_data, RD_idx=18, TD_idx=19):
     ## Perform a PCA/PCR on certain spatial and defect parameters
     # Organize and normalize process parameters
     RD, TD = [np.asarray(input_data[:,RD_idx]).astype(np.float),
                     np.asarray(input_data[:,TD_idx]).astype(np.float)]
-    polar, azimuth = [np.asarray(input_data[:,polar_idx]).astype(np.float),
-                        np.asarray(input_data[:,azimuth_idx]).astype(np.float)]
+
     # SHIFT TO ORIGIN
     center = 123
     radial = np.sqrt((RD-center)**2+(TD-center)**2)
-    med_nn = input_data[:,-1].astype(np.float)
-    RD, TD, radial, polar, azimuth, med_nn = [normalize(RD), normalize(TD),
-                                            normalize(radial), normalize(polar),
-                                            normalize(azimuth), normalize(med_nn)]
-    spatial_data = np.column_stack((RD, TD, radial, polar, azimuth, med_nn))
+    volume_mean = input_data[:,-1].astype(np.float)
+    RD, TD, radial, volume_mean = [normalize(RD), normalize(TD), normalize(radial),
+                                normalize(volume_mean)]
+    spatial_data = np.column_stack((RD, TD, radial, volume_mean))
     return spatial_data
 
 
