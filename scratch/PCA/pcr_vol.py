@@ -95,3 +95,10 @@ def pcr(data):
 
 def normalize(iarray):
     return (iarray-np.mean(iarray))/np.std(iarray)
+
+
+def wrap():
+    inp = scrape_data()
+    data = extract(inp)
+    u, s, v, b, T, e = pcr(data)
+    return u, s, v, b, T, e
