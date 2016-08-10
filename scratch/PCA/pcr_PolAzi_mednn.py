@@ -16,7 +16,7 @@ import numpy as np
 import json
 
 
-def scrape_data(plate_list=['1']):
+def scrape_data(plate_list=['2']):
     # Retrieve process parameters
     build_data = np.genfromtxt('process_parameters.csv', delimiter=',',
                                     dtype=None)
