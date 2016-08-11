@@ -10,7 +10,6 @@ DESCRIPTION
 from __future__ import division
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.decomposition import PCA
 import sys, os, glob
 import numpy as np
 import json
@@ -73,6 +72,7 @@ def extract(input_data, RD_idx=18, TD_idx=19):
     RD, TD, radial, volume_mean = [normalize(RD), normalize(TD), normalize(radial),
                                 normalize(volume_mean)]
     spatial_data = np.column_stack((RD, TD, radial, volume_mean))
+    np.save('RTR_vol.npy', spatial_data)
     return spatial_data
 
 

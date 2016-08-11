@@ -10,7 +10,6 @@ DESCRIPTION
 from __future__ import division
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.decomposition import PCA
 import sys, os, glob
 import numpy as np
 import json
@@ -71,6 +70,7 @@ def extract(input_data, polar_idx=8, azimuth_idx=16):
     polar, azimuth, med_nn = [normalize(polar), normalize(azimuth),
                                     normalize(med_nn)]
     spatial_data = np.column_stack((polar, azimuth, med_nn))
+    np.save('PA_mednn.npy', spatial_data)
     return spatial_data
 
 
