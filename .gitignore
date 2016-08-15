@@ -50,6 +50,7 @@ coverage.xml
 *.tif
 *.pdf
 *.json
+*.dcm
 
 # Translations
 *.mo
