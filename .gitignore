@@ -51,6 +51,7 @@ coverage.xml
 *.pdf
 *.json
 *.dcm
+*.ipynb
 
 # Translations
 *.mo
