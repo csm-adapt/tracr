@@ -16,7 +16,7 @@ def _regularize_dcm_files(dcm_files):
 		# yes: either a single file or a directory
 		if os.path.isdir(dcm_files):
 			# create a list of DICOM files from the contents of the directory
-			dcm_files = dcm_files.rstrip('/')
+			# dcm_files = dcm_files.rstrip('/')
 			rval = ['{}/{}'.format(dcm_files, fname)
 					for fname in os.listdir(dcm_files)
 					if re.match(r'.*\.dcm', fname)]
@@ -26,14 +26,12 @@ def _regularize_dcm_files(dcm_files):
 	else:
 		# We receive a list of string filenames, what `read` expects
 		rval = dcm_files
-
-
 	# IOError : ----- WORK IN PROGRESS -----
 	# 1) Actual IOError message throws a separate error
 	# 2) Depending on rval, this usually always throws errors since `rval` ...
 		   # ... is no better than a list of strings unless we are in the dir
-	for fname in rval:
-		if not os.path.isfile(fname):
+	# for fname in rval:
+		# if not os.path.isfile(fname):
 			# the below IOError threw an error
 			# raise IOError('{} is not a file'.format fname)
 	return rval
@@ -62,7 +60,7 @@ def read(dcm_files):
 		layer = dicom.read_file(filename)
 		if dicom_array is None:
 			nrows, ncols = int(layer.Rows), int(layer.Columns)
-			dicom_array = np.zeros((nrow, ncols, len(dcm_files)))
+			dicom_array = np.zeros((nrows, ncols, len(dcm_files)))
 			pixel_size = 1000*np.array(layer.PixelSpacing).astype(float)
 		if len(dcm_files)==1:
 			dicom_array[:, :, 0] = layer.pixel_array
