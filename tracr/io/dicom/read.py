@@ -7,7 +7,7 @@ The resulting array is 1000 x 1024 in cross section direction and 1014 "tall"
 import sys, os, re
 import numpy as np
 import dicom
-
+from errno import ENOENT
 
 def _regularize_dcm_files(dcm_files):
 	# Are we reading a file, a list of files, or files from a directory?
@@ -16,7 +16,6 @@ def _regularize_dcm_files(dcm_files):
 		# yes: either a single file or a directory
 		if os.path.isdir(dcm_files):
 			# create a list of DICOM files from the contents of the directory
-			# dcm_files = dcm_files.rstrip('/')
 			rval = ['{}/{}'.format(dcm_files, fname)
 					for fname in os.listdir(dcm_files)
 					if re.match(r'.*\.dcm', fname)]
@@ -26,14 +25,10 @@ def _regularize_dcm_files(dcm_files):
 	else:
 		# We receive a list of string filenames, what `read` expects
 		rval = dcm_files
-	# IOError : ----- WORK IN PROGRESS -----
-	# 1) Actual IOError message throws a separate error
-	# 2) Depending on rval, this usually always throws errors since `rval` ...
-		   # ... is no better than a list of strings unless we are in the dir
-	# for fname in rval:
-		# if not os.path.isfile(fname):
-			# the below IOError threw an error
-			# raise IOError('{} is not a file'.format fname)
+	# IOError
+	for fname in rval:
+		if not os.path.isfile(fname):
+			raise IOError(ENOENT, '{} is not a file'.format, fname)
 	return rval
 
 
@@ -81,5 +76,5 @@ if __name__ == '__main__':
 		# save the output
 		np.save(path+ofile, dicom_array)
 	except:
-		sys.stderr.write('Usage: {} INPUT.tif [OUTPUT.npy]'.format(sys.argv[0]))
+		sys.stderr.write('Usage: {} INPUT.dcm [OUTPUT.npy]'.format(sys.argv[0]))
 		sys.exit(1)
