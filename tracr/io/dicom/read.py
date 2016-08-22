@@ -72,10 +72,9 @@ if __name__ == '__main__':
 		try:
 			ofile = sys.argv[2]
 		except IndexError:
-			path, base = os.path.split(ifile)
 			ofile, ext = os.path.splitext(base)
-		# save the output
-		np.save(path+ofile, dicom_array)
+			ofile = '{}/{}'.format(path, ofile)
+			np.save(ofile, dicom_array)
 	except:
 		sys.stderr.write('Usage: {} INPUT.dcm [OUTPUT.npy]'.format(sys.argv[0]))
 		sys.exit(1)
