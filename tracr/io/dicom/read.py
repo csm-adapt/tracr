@@ -16,6 +16,7 @@ def _regularize_dcm_files(dcm_files):
 		# yes: either a single file or a directory
 		if os.path.isdir(dcm_files):
 			# create a list of DICOM files from the contents of the directory
+			dcm_files = dcm_files.rstrip('/')
 			rval = ['{}/{}'.format(dcm_files, fname)
 					for fname in os.listdir(dcm_files)
 					if re.match(r'.*\.dcm', fname)]
@@ -24,7 +25,7 @@ def _regularize_dcm_files(dcm_files):
 			rval = [dcm_files]
 	else:
 		# We receive a list of string filenames, what `read` expects
-		rval = dcm_files
+		rval = list(dcm_files)
 	# IOError
 	for fname in rval:
 		if not os.path.isfile(fname):
@@ -66,7 +67,7 @@ def read(dcm_files):
 if __name__ == '__main__':
 	try:
 		# generate array
-		dicom_array = read(ifile)
+		dicom_array = read(sys.argv[1])
 		# read filename
 		try:
 			ofile = sys.argv[2]
