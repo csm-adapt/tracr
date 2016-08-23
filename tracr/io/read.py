@@ -8,7 +8,7 @@ def read(filename, **kwds):
     fmt = check_format(fmt)
     if fmt == 'tif':
         return read_tif(filename)
-    elif fmt == 'dcm':
+    elif fmt == 'dcm' or fmt == 'DCM' or fmt == 'dicom' or fmt == 'DICOM':
         return read_dicom(filename)
     else:
         raise RuntimeError('You should never get here!')
