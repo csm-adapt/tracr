@@ -53,8 +53,7 @@ for(i=1:n)
     if(directory(i).name(1) ~= '.')
        im=imread(fullfile(fdir,directory(i).name),'tif');
        gt(i,:) = multithresh(im,2);
-    end
-    
+    end    
     %outputs percent progress
     percentDone = 100 * i/n;
     msg = sprintf('Percent done: %3.1f', percentDone);

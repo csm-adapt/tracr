@@ -50,6 +50,10 @@ coverage.xml
 *.tif
 *.pdf
 *.json
+*.ipynb
+*.dcm
+*.npy
+*.DS_Store
 
 # Translations
 *.mo
