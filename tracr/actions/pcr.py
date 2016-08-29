@@ -73,8 +73,6 @@ def scrape_data(all_build_data=None, plate_list=['2'],
 
     # Generate ID-response array
     input_data = []
-    print np.asarray(abbrev_parts)
-    print np.asarray(response)
     ID_response = np.vstack((np.asarray(abbrev_parts).T, np.asarray(response).T)).T
     for sample in all_build_data:
         if any(y==sample[idx['plate']] for y in plate_list):
@@ -84,10 +82,13 @@ def scrape_data(all_build_data=None, plate_list=['2'],
                 sample = np.append(sample, ID_response[match,1:])
                 input_data.append(sample)
         input_data = np.vstack(input_data)
-    return ID_response
+    return input_data
 
-def pcr(data):
+def pcr(all_build_data=None, plate_list=['2'], feat_list=None, resp_var=None,
+         stat_param=None):
     # Perform an SVD of the build data
+    data = scrape_data(all_build_data=None, plate_list=['2'], feat_list=None,
+                        resp_var=None, stat_param=None)
     u, s, v = np.linalg.svd(data[:, :-1], full_matrices=False)
     s = np.diag(s)
     T = np.dot(u,s)
