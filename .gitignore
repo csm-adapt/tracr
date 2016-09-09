@@ -53,6 +53,7 @@ coverage.xml
 *.ipynb
 *.dcm
 *.npy
+*.DS_Store
 
 # Translations
 *.mo

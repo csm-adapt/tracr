@@ -1,1 +1,1 @@
-from .threshold import Threshold, ExternalThreshold
+from otsu import otsu
