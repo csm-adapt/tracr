@@ -3,7 +3,7 @@ sys.path.append('..')
 from tracr.actions.threshold import otsu
 from PIL import Image
 from scipy.misc import face
-from skimage import feature
+from skimage import feature, filters
 import numpy as np
 from matplotlib import pyplot as plt
 from glob import glob
@@ -210,6 +210,42 @@ class TestClass: # keep this the same
                 plt.savefig('M04_3-class.png', dpi=300)
                 plt.clf()
                 Image.open('M04_3-class.png').show()
+
+    def test_compare_thresholds(self):
+        frame_list = glob("./test_resources/Y23_0.4X_raw_tifs/*.tif")
+        for idx in range(400,450):
+            frame = frame_list[idx]
+            self.image = np.array(Image.open(frame))
+            if idx==425:
+                # Yen threshold seems to return same as TRACR
+                self.otsu_thresholds = otsu(self.image, nclasses=2)
+                self.sk_otsu = filters.threshold_otsu(self.image, nbins=256)
+                self.sk_adaptive5 = filters.threshold_adaptive(self.image,
+                                                               block_size=5)
+                self.sk_adaptive21 = filters.threshold_adaptive(self.image,
+                                                               block_size=21)
+                self.sk_yen = filters.threshold_yen(self.image, nbins=256)
+                plt.hist(self.image.flatten(), bins=256, log=True)
+
+                # The adaptive implementations return thresholded arrays
+                print "TRACR Otsu thresholds: %s" % (self.otsu_thresholds)
+                print "SK Otsu thresholds: %s" % (self.sk_otsu)
+                print "SK Yen thresholds: %s" % (self.otsu_thresholds)
+
+                fig = plt.figure()
+                ax11 = fig.add_subplot(231)
+                ax12 = fig.add_subplot(232)
+                ax13 = fig.add_subplot(233)
+                ax21 = fig.add_subplot(234)
+                ax22 = fig.add_subplot(235)
+                ax23 = fig.add_subplot(236)
+                ax11.imshow(self.image)
+                ax12.imshow(self.image<otsu_thresholds[0])
+                ax13.imshow(self.image<sk_otsu)
+                ax21.imshow(sk_adaptive5)
+                ax22.imshow(sk_adaptive21)
+                ax23.imshow(self.image<sk_yen)
+                plt.show()
 
     # def test_tif_series_4otsu(self):
     #     frame_list = glob("./test_resources/M04_0.4X_raw_tifs/*.tif")

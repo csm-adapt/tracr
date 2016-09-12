@@ -1,1 +1,1 @@
-from otsu import otsu
+from .threshold.otsu import otsu
