@@ -240,11 +240,11 @@ class TestClass: # keep this the same
                 ax22 = fig.add_subplot(235)
                 ax23 = fig.add_subplot(236)
                 ax11.imshow(self.image)
-                ax12.imshow(self.image<otsu_thresholds[0])
-                ax13.imshow(self.image<sk_otsu)
-                ax21.imshow(sk_adaptive5)
-                ax22.imshow(sk_adaptive21)
-                ax23.imshow(self.image<sk_yen)
+                ax12.imshow(self.image < self.otsu_thresholds[0])
+                ax13.imshow(self.image < self.sk_otsu)
+                ax21.imshow(self.sk_adaptive5)
+                ax22.imshow(self.sk_adaptive21)
+                ax23.imshow(self.image < self.sk_yen)
                 plt.show()
 
     # def test_tif_series_4otsu(self):
