@@ -104,17 +104,17 @@ for i in range(len(part_list)):
             lbl, num = label(arr, np.ones((3,3,3)))
             thresh_table[j,i] = num
 
-        fig = plt.figure()
-        ax11 = fig.add_subplot(221)
-        ax12 = fig.add_subplot(222)
-        ax21 = fig.add_subplot(223)
-        ax22 = fig.add_subplot(224)
-        ax11.imshow(part[:,:,500])
-        ax12.imshow(part[:,:,500]<tracr_val)
-        ax21.imshow(part[:,:,500]<skotsu_val)
-        ax22.imshow(part[:,:,500]<skyen_val)
-        plt.title(name)
-        plt.show()
+    fig = plt.figure()
+    ax11 = fig.add_subplot(221)
+    ax12 = fig.add_subplot(222)
+    ax21 = fig.add_subplot(223)
+    ax22 = fig.add_subplot(224)
+    ax11.imshow(part[:,:,500])
+    ax12.imshow(part[:,:,500]<tracr_val)
+    ax21.imshow(part[:,:,500]<skotsu_val)
+    ax22.imshow(part[:,:,500]<skyen_val)
+    plt.title(name)
+    plt.show()
 
 print thresh_table
 
