@@ -247,6 +247,7 @@ class TestClass: # keep this the same
                 ax23.imshow(self.image < self.sk_yen)
                 plt.show()
 
+
     # def test_tif_series_4otsu(self):
     #     frame_list = glob("./test_resources/M04_0.4X_raw_tifs/*.tif")
     #     for idx in range(len(frame_list)):
