@@ -48,6 +48,7 @@ coverage.xml
 # Test data formats
 *.csv
 *.tif
+*.png
 *.pdf
 *.json
 *.ipynb
