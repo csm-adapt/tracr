@@ -4,15 +4,15 @@ except ImportError:
 	from distutils.core import setup
 
 config = {
-	'description': 'My Project',
+	'description': 'Tomography Reconstruction Analysis and Characterization Routines',
 	'author': 'Branden Kappes',
-	'url': 'URL at which to get it.',
-	'download_url': 'Where to download it.',
+	'url': 'https://github.com/csm-adapt/tracr.git',
+	'download_url': 'https://github.com/csm-adapt/tracr.git',
 	'author_email': 'bkappes@mines.edu',
 	'version': '0.1',
 	'install_requires': ['nose'],
-	'packages': ['NAME'],
-	'scripts': [],
-	'name': 'projectname',
+	'packages': ['tracr'],
+	'scripts': ['bin/tracr'],
+	'name': 'tracr',
 }
 setup(**config)	

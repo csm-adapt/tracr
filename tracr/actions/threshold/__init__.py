@@ -1,2 +1,2 @@
-from otsu import otsu
+from .otsu import otsu
 

@@ -25,7 +25,7 @@ sys.path = [parent] + sys.path
 
 from tracr.structures import Porosity
 from tracr.actions import ExternalThreshold
-from tracr.actions.threshold.threshold import otsu
+from tracr.actions.threshold import otsu
 from tracr.io import read, write
 from tracr.metrics import pore_com
 from tracr.metrics import pore_volume
