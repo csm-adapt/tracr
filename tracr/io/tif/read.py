@@ -1,23 +1,48 @@
 #!/usr/bin/env python
 """
-A script that converts ORS saved tif frames to an intensity voxel array
-The resulting array is 1000 x 1024 in cross section direction and 1014 "tall"
+A script that converts TIF format files/dirs into a numpy format
+intensity voxel array.
 """
 
-import sys, os
+import sys, os, glob
 import numpy as np
 from PIL import Image, ImageSequence
 
-def read(ifile):
-	"""
-    Import image and details. Create 3D array layer by layer using Iterator.
-    Array is reshaped for more intuitive indexing (image vs numpy indexing).
+def read_multilayer(ifile):
+    """
+    File reader for single file, multilayer TIF images (3D data)
+    e.g. 'sampleX_multilayer.tif'
     """
     im = Image.open(ifile)
     intensity_array = np.array([np.array(frame) for frame in ImageSequence.Iterator(im)])
-    intensity_array = np.transpose(intensity_array, axes=(1,2,0))
     return intensity_array
-#end 'def tif2array(ifile, ofile=None):'
+
+def read_single(ifile):
+    """
+    File reader for single file, single layer TIF images (2D data)
+    e.g. 'sampleX.tif'
+    """
+    return np.array(Image.open(ifile))
+
+def read(ifile):
+    """
+    Root reading function:
+        - Check if argument is single file (multi or single layer) or directory
+        - Call appropriate reader
+    """
+    if os.path.isdir(ifile):
+        # DIR: Iterate through each frame contained in directory
+        all_frames = glob.glob(ifile+'*')
+        return np.array([read_single(frame) for frame in all_frames])
+    else:
+        # FILE: Check if file is single or multilayer, read accordingly
+        im = Image.open(ifile)
+        if im.n_frames == 1:
+            arr = read_single(ifile)
+            return arr
+        else:
+            arr = read_multilayer(ifile)
+            return arr
 
 if __name__ == '__main__':
 	try:

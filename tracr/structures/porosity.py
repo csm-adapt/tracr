@@ -2,7 +2,13 @@ from scipy.ndimage.measurements import label
 
 class Porosity(object):
     """
-    Accepts a 3D intensity array and determines the pore/void
+    SOON TO BE MERGED INTO 'FEATURE' CLASS
+
+    Accepts a 2D/3D array of raw intensity values and decomposes data into
+    distinct features, based on clusters of similar intensity (monomodal)
+
+
+    3D intensity array and determines the pore/void
     locations.
     """
     def __init__(self, arr, *args, **kwds):
