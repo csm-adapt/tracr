@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
 A script that converts TIF format files/dirs into a numpy format
-intensity voxel array.
+intensity voxel array. 3D arrays are transposed such that the 'z'
+direction of the array is also 'up' in the uXCT machine frame.
 """
 
 import sys, os, glob
@@ -29,11 +30,13 @@ def read(ifile):
     Root reading function:
         - Check if argument is single file (multi or single layer) or directory
         - Call appropriate reader
+		- Tranpose data for upwards-z indexing
     """
     if os.path.isdir(ifile):
         # DIR: Iterate through each frame contained in directory
         all_frames = glob.glob(ifile+'*')
-        return np.array([read_single(frame) for frame in all_frames])
+        return np.transpose(np.array([read_single(frame) for frame in all_frames]),
+								axes=(1,2,0)
     else:
         # FILE: Check if file is single or multilayer, read accordingly
         im = Image.open(ifile)
@@ -42,7 +45,7 @@ def read(ifile):
             return arr
         else:
             arr = read_multilayer(ifile)
-            return arr
+            return np.transpose(arr, axes=(1,2,0))
 
 if __name__ == '__main__':
 	try:
