@@ -1,6 +1,6 @@
 #
-# Writes a TIF file from a numpy array
+# Writes a DCM file from a numpy array
 #
 
 def write(filename, arr):
-    raise NotImplementedError('Writing TIF files is not yet available.')
+    raise NotImplementedError('Writing DCM files is not yet available.')

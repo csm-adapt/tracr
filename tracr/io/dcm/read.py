@@ -5,12 +5,13 @@ values. Iteratively processes each .dcm layer at a time (no multilayer).
 
 INPUT:
 	- Either a single .dcm file or folder of .dcm frames
-		e.g. read('path/to/DCM_folder/')
 
 OUTPUT:
-	- Numpy array (either 2D or 3D) of .dcm intensity data. 3D arrays transposed
-		for 'z' = upward indexing
-		e.g. read('path/to/frame.dcm')
+	- Numpy array (either 2D or 3D) of .dcm intensity data.
+
+USAGE:
+	e.g. intensity_array = read('path/to/frame.dcm')
+	e.g. intensity_array = read('path/to/DCM_folder/')
 """
 
 import sys, os, glob
