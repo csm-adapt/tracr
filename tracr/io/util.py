@@ -24,12 +24,3 @@ def guess_format(filename):
     else:
         msg = 'Could not guess the format of {}.'.format(filename)
         raise IOError(msg)
-
-# What is the point of this block?
-def check_format(fmt):
-    fmt = fmt.lower()
-    if ext in ('tif', 'tiff'):
-        return 'tif'    
-    else:
-        msg = '{} format is not a recognized format.'.format(fmt)
-        raise IOError(msg)

@@ -26,7 +26,7 @@ def read(filename, **kwds):
     # Not sure what keywords we would pass here...
     #fmt = kwds.get('format', guess_format(filename))
     #fmt = check_format(fmt)
-    
+
     ## Check if user input is a file or folder of files
     if os.path.isdir(filename):
         fmt = guess_format(os.listdir(filename)[0])
@@ -38,4 +38,5 @@ def read(filename, **kwds):
     elif fmt == 'dcm':
         return read_dcm(filename)
     else:
-        raise RuntimeError('You should never get here!')
+        msg = '{} is not a recognized input format.'.format(fmt)
+        raise NotImplementedError(msg)
