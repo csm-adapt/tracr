@@ -20,19 +20,21 @@ USAGE:
     e.g. read('path/to/sampleX.tif')
 """
 
-
-from .util import guess_format, check_format
+import os, glob
+from .util import guess_format
 from .tif import read as read_tif
 from .dcm import read as read_dcm
 
 def read(filename, **kwds):
-    # If format specified, great. If not, we call guess_format using a file
+    # If format specified, great (still lower it). If not, we call
+    #   guess_format using a file
     # Make sure only a single file is sent to the reader
     if os.path.isdir(filename):
-        fmt = kwds.get('format', guess_format(filename[0]))
+        frame = glob.glob(filename + '*')[0]
+        fmt = kwds.get('format', guess_format(frame))
     else:
         fmt = kwds.get('format', guess_format(filename))
-    # Select appropriate reader
+    # Select appropriate reader based on 'fmt' - they will check if file/folder
     if fmt.lower() in ('tif', 'tiff'):
         return read_tif(filename)
     elif fmt.lower() in ('dcm', 'dicom'):
