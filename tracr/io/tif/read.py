@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 """
-A script that converts TIF format files/dirs into a numpy format
-intensity voxel array. 3D arrays are transposed such that the 'z'
-direction of the array is also 'up' in the uXCT machine frame.
+Converts TIF format files/dirs into a numpy format intensity voxel array.
+3D arrays are transposed such that the 'z'direction of the array is also 'up'
+in the uXCT machine frame.
+
+INPUT:
+    - .tif file (either single or multilayer), or folder of .tif frames
+
+OUTPUT:
+    - Numpy array (either 2D or 3D) of intensity data
+
+USAGE:
+    e.g. intensity_array = read('path/to/data.tif')
+    e.g. intensity_array = read('path/to/TIF_folder/')
 """
 
 import sys, os, glob
