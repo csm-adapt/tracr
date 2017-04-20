@@ -24,8 +24,12 @@ from .tif import read as read_tif
 from .dcm import read as read_dcm
 
 def read(filename, **kwds):
-    # If format specified, great. If not, we call guess_format.
-    fmt = kwds.get('format', guess_format(filename))
+    # If format specified, great. If not, we call guess_format using a file
+    # Make sure only a single file is sent to the reader
+    if os.path.isdir(filename):
+        fmt = kwds.get('format', guess_format(filename[0]))
+    else:
+        fmt = kwds.get('format', guess_format(filename))
     # Select appropriate reader
     if fmt == 'tif':
         return read_tif(filename)
