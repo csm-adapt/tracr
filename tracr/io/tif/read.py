@@ -46,7 +46,7 @@ def read(ifile):
         # DIR: Iterate through each frame contained in directory
         all_frames = glob.glob(ifile+'*')
         return np.transpose(np.array([read_single(frame) for frame in all_frames]),
-								axes=(1,2,0)
+								axes=(1,2,0))
     else:
         # FILE: Check if file is single or multilayer, read accordingly
         im = Image.open(ifile)
@@ -58,17 +58,17 @@ def read(ifile):
             return np.transpose(arr, axes=(1,2,0))
 
 if __name__ == '__main__':
-	try:
-		# generate array
-		intensity_array = read(ifile)
-		# read filename
-		try:
-			ofile = sys.argv[2]
-		except IndexError:
-			path, base = os.path.split(ifile)
-			ofile, ext = os.path.splitext(base)
-		# save the output
-		np.save(path+ofile, intensity_array)
-	except:
-		sys.stderr.write('Usage: {} INPUT.tif [OUTPUT.npy]'.format(sys.argv[0]))
+    try:
+        # Load inputs and read ifile normally
+        ifile = sys.argv[1]
+        path, base = os.path.split(ifile)
+        intensity_array = read(ifile)
+        try:
+            ofile = sys.argv[2]
+        except IndexError:
+            # Extract path for saving array
+            ofile, ext = os.path.splitext(base)
+        np.save(path+ofile, intensity_array)
+    except IndexError:
+		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
 		sys.exit(1)
