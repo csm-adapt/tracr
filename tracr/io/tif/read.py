@@ -68,7 +68,7 @@ if __name__ == '__main__':
         except IndexError:
             # Extract path for saving array
             ofile, ext = os.path.splitext(base)
-        np.save(path+ofile, intensity_array)
+        np.save(path+'_'+ofile, intensity_array)
     except IndexError:
 		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
 		sys.exit(1)
