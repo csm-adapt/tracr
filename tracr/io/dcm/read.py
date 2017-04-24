@@ -2,6 +2,7 @@
 """
 A script that converts DCM formatted data into a numpy array of intensity
 values. Iteratively processes each .dcm layer at a time (no multilayer).
+Output 3D arrays are transposed for z-upward indexing.
 
 INPUT:
 	- Either a single .dcm file or folder of .dcm frames
@@ -27,21 +28,21 @@ def read(ifile):
         all_frames = glob.glob(ifile+'*')
         return np.transpose(np.array([read_single(frame) for frame in all_frames]),
                                         axes=(1,2,0))
-	else:
+    else:
         return read_single(ifile)
 
 if __name__ == '__main__':
-	try:
-		# generate array
-		intensity_array = read(ifile)
-		# read filename
-		try:
-			ofile = sys.argv[2]
-		except IndexError:
-			path, base = os.path.split(ifile)
-			ofile, ext = os.path.splitext(base)
-		# save the output
-		np.save(path+ofile, intensity_array)
-	except:
-		sys.stderr.write('Usage: {} INPUT.tif [OUTPUT.npy]'.format(sys.argv[0]))
+    try:
+        # Load inputs and read ifile normally
+        ifile = sys.argv[1]
+        path, base = os.path.split(ifile)
+        intensity_array = read(ifile)
+        try:
+            ofile = sys.argv[2]
+        except IndexError:
+            # Extract path for saving array
+            ofile, ext = os.path.splitext(base)
+        np.save(path+'_'+ofile, intensity_array)
+    except IndexError:
+		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
 		sys.exit(1)
