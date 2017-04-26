@@ -35,7 +35,7 @@ def read_single(ifile):
     e.g. 'sampleX.tif'
     """
     im = Image.open(ifile)
-    im.convert('L')
+    im = im.convert('L')
     return np.array(im)
 
 def read(ifile):
