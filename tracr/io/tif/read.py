@@ -30,10 +30,13 @@ def read_multilayer(ifile):
 
 def read_single(ifile):
     """
-    File reader for single file, single layer TIF images (2D data)
+    File reader for single file, single layer TIF images (2D data). We also
+    ensure that image is greyscale before converting (ITU-R 601-2).
     e.g. 'sampleX.tif'
     """
-    return np.array(Image.open(ifile))
+    im = Image.open(ifile)
+    im.convert('L')
+    return np.array(im)
 
 def read(ifile):
     """
