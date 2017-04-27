@@ -8,7 +8,7 @@ INPUT:
 	- Either a single .dcm file or folder of .dcm frames
 
 OUTPUT:
-	- Numpy array (either 2D or 3D) of .dcm intensity data.
+	- Feature object (array (either 2D or 3D) of .dcm intensity data).
 
 USAGE:
 	e.g. intensity_array = read('path/to/frame.dcm')
@@ -18,18 +18,19 @@ USAGE:
 import sys, os, glob
 import dicom
 import numpy as np
+from ..base import Feature
 
 def read_single(ifile):
-    return dicom.read_file(ifile).pixel_array
+    return Feature(dicom.read_file(ifile).pixel_array)
 
 def read(ifile):
 	# If input is folder, iterate through each frame and then transpose 3D array
     if os.path.isdir(ifile):
         all_frames = glob.glob(ifile+'*')
-        return np.transpose(np.array([read_single(frame) for frame in all_frames]),
-                                        axes=(1,2,0))
+        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
+                                        axes=(1,2,0)))
     else:
-        return read_single(ifile)
+        return Feature(read_single(ifile))
 
 if __name__ == '__main__':
     try:
