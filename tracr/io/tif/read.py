@@ -18,6 +18,7 @@ USAGE:
 import sys, os, glob
 import numpy as np
 from PIL import Image, ImageSequence
+from ..base import Feature
 
 def read_multilayer(ifile):
     """
@@ -36,7 +37,7 @@ def read_single(ifile):
     """
     im = Image.open(ifile)
     if im.mode in ('RGB', 'RGBA'):
-        im = im.convert('L')    
+        im = im.convert('L')
     return np.array(im)
 
 def read(ifile):
@@ -45,21 +46,22 @@ def read(ifile):
         - Check if argument is single file (multi or single layer) or directory
         - Call appropriate reader
 		- Tranpose data for upwards-z indexing
+        - Initiate Feature class using output numpy array
     """
     if os.path.isdir(ifile):
         # DIR: Iterate through each frame contained in directory
         all_frames = glob.glob(ifile+'*')
-        return np.transpose(np.array([read_single(frame) for frame in all_frames]),
-								axes=(1,2,0))
+        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
+								axes=(1,2,0)))
     else:
         # FILE: Check if file is single or multilayer, read accordingly
         im = Image.open(ifile)
         if im.n_frames == 1:
             arr = read_single(ifile)
-            return arr
+            return Feature(arr)
         else:
             arr = read_multilayer(ifile)
-            return np.transpose(arr, axes=(1,2,0))
+            return Feature(np.transpose(arr, axes=(1,2,0)))
 
 if __name__ == '__main__':
     try:
