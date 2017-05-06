@@ -21,7 +21,7 @@ import numpy as np
 from ..base import Feature
 
 def read_single(ifile):
-    return Feature(dicom.read_file(ifile).pixel_array)
+    return dicom.read_file(ifile).pixel_array
 
 def read(ifile):
 	# If input is folder, iterate through each frame and then transpose 3D array
