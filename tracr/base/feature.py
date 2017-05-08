@@ -10,12 +10,17 @@ from scipy.ndimage.measurements import label, center_of_mass
 class Feature(object):
     # Where 'object' represents the numpy array of pre-read intensity data
     # This object is initiated within tracr.io.read
-    def __init__(self, arr, *args, **kwds):
-        self.set_array(arr, **kwds)
+    def __init__(cls, arr, **kwds):
+        #self.set_array(arr, **kwds)
+        obj = np.asarray(arr).view(cls)
 
-    def set_array(self, arr, **kwds):
-        self.thresh_val = self.threshold(arr)
-        self.labels, self.nlabels = label((arr<self.thresh_val))
+        # Check for pixel size
+        obj.pixelsize = kwds.get('pixelsize', None)
+        return obj
 
-    def threshold(self, arr):
-        return skotsu(arr.flatten())
+    #def set_array(self, arr, **kwds):
+        #self.thresh_val = self.threshold(arr)
+        #self.labels, self.nlabels = label((arr < self.thresh_val))
+
+    #def threshold(self, arr):
+        #return skotsu(arr.flatten())
