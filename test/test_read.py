@@ -12,22 +12,22 @@ from matplotlib import pyplot as plt
 # Only using single files for now, not desirable to store huge folders
 class TestReadTIF:
 
-    def test_singleTIF(self):
+    def test_singleXCT_TIF(self):
         data = 'testing_data/P002_B001_C04-0.4X_4.83122_0666.tif'
         feat = readTIF(data)
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature
-        print feat.nlabels
-        plt.figure()
-        plt.imshow(feat.labels)
+        # assert np.sum(feat.raw_arr) == 9953421973 (aggregate sum)
     # Insert multilayer tif reading tests
 
     # Insert tif folder tests
+    def test_singleMET_TIF(self):
+        data = 'testing_data/P002_B001_O14_500x_layer3_capture.tif'
+        feat = readTIF(data)
 
-
-    # Insert *any* tif tests (for tracr.io.tif.read function)
-
+        assert type(feat) is Feature
+        # assert np.sum(feat.raw_arr) == 142991265 (aggregate sum)
 
 class TestReadDCM:
     def test_singleDCM(self):
@@ -36,9 +36,7 @@ class TestReadDCM:
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature
-        print feat.nlabels
-        plt.figure()
-        plt.imshow(feat.labels)
+        # assert np.sum(feat.raw_arr) == 9953421973
 
 
     # Insert single dcm reading tests (testing tracr.io.dcm.read)
