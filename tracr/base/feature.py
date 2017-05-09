@@ -5,6 +5,8 @@ by further attributing: label count, volumes, COMs, etc.
 """
 # Will add more thresholding schemes once we clean up thresholding functions:
 import numpy as np
+import logging
+logging.basicConfig(filename='feature.log', level=logging.DEBUG)
 
 class Feature(np.ndarray):
     # Where 'object' represents the numpy array of pre-read intensity data
@@ -27,4 +29,4 @@ class Feature(np.ndarray):
         if 'pixelsize' not in kwds:
             msg = "'pixelsize' was not set when Feature object was created. " \
                 "A pixel size of 1 is assumed for all calculations."
-            tracrlog.warning(msg)
+            logging.warning(msg)
