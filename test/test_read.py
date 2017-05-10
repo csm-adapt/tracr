@@ -18,7 +18,7 @@ class TestReadTIF:
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature
-        # assert np.sum(feat.raw_arr) == 9953421973 (aggregate sum)
+        assert np.sum(feat) == 9953421973 # (aggregate sum)
     # Insert multilayer tif reading tests
 
     # Insert tif folder tests
@@ -27,7 +27,7 @@ class TestReadTIF:
         feat = readTIF(data)
 
         assert type(feat) is Feature
-        # assert np.sum(feat.raw_arr) == 142991265 (aggregate sum)
+        assert np.sum(feat.raw_arr) == 142991265 # (aggregate sum)
 
 class TestReadDCM:
     def test_singleDCM(self):
@@ -36,7 +36,7 @@ class TestReadDCM:
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature
-        # assert np.sum(feat.raw_arr) == 9953421973
+        assert np.sum(feat.raw_arr) == 9953421973 # (aggregate sum)
 
 
     # Insert single dcm reading tests (testing tracr.io.dcm.read)
