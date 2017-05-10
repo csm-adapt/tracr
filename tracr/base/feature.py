@@ -16,7 +16,12 @@ class Feature(np.ndarray):
         obj = np.asarray(arr).view(cls)
 
         # Check for pixel size
-        obj.pixelsize = kwds.get('pixelsize', None)
+        if 'pixelsize' not in kwds:
+            msg = "'pixelsize' was not set when Feature object was created. " \
+                "A pixel size of 1 is assumed for all calculations (pixel dim's)."
+            logging.warning(msg)
+        else:
+            obj.pixelsize = kwds.get('pixelsize', None)
         return obj
 
     def __array_finalize__(self, obj):
@@ -25,8 +30,8 @@ class Feature(np.ndarray):
         # instance is actually created (i.e. when `__new__` is called)
         if obj is None:
             return
-
-        if 'pixelsize' not in kwds:
-            msg = "'pixelsize' was not set when Feature object was created. " \
-                "A pixel size of 1 is assumed for all calculations."
-            logging.warning(msg)
+        ## Is this necessary here as well? :
+        #if 'pixelsize' not in kwds:
+        #    msg = "'pixelsize' was not set when Feature object was created. " \
+        #        "A pixel size of 1 is assumed for all calculations."
+        #    logging.warning(msg)
