@@ -17,8 +17,11 @@ class TestReadTIF:
         feat = readTIF(data)
 
         # Make assertions, tests, etc.
-        assert type(feat) is Feature
-        assert np.sum(feat) == 9953421973 # (aggregate sum)
+        assert type(feat) is Feature, \
+            'Feature is of type: {}'.format(type(feat))
+        assert np.sum(feat) == 9953421973, \
+            'Checksum of Feature is: {} ' \
+            '(should be 9953421973)'.format(np.sum(feat))
     # Insert multilayer tif reading tests
 
     # Insert tif folder tests
@@ -26,8 +29,11 @@ class TestReadTIF:
         data = 'testing_data/P002_B001_O14_500x_layer3_capture.tif'
         feat = readTIF(data)
 
-        assert type(feat) is Feature
-        assert np.sum(feat.raw_arr) == 142991265 # (aggregate sum)
+        assert type(feat) is Feature, \
+            'Feature is of type: {}'.format(type(feat))
+        assert np.sum(feat) == 142991265, \
+            'Checksum of Feature is: {} ' \
+            '(should be 142991265)'.format(np.sum(feat))
 
 class TestReadDCM:
     def test_singleDCM(self):
@@ -35,8 +41,11 @@ class TestReadDCM:
         feat = readDCM(data)
 
         # Make assertions, tests, etc.
-        assert type(feat) is Feature
-        assert np.sum(feat.raw_arr) == 9953421973 # (aggregate sum)
+        assert type(feat) is Feature, \
+            'Feature is of type: {}'.format(type(feat))
+        assert np.sum(feat.raw_arr) == 9953421973, \
+            'Checksum of Feature is: {} ' \
+            '(should be 9953421973)'.format(np.sum(feat))
 
 
     # Insert single dcm reading tests (testing tracr.io.dcm.read)
