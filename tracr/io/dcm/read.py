@@ -27,13 +27,18 @@ def read(ifile, **kwds):
 	# Get pixelsize passed from general reading function
 	px_size = kwds.get('pixelsize', 1)
 
-	# If input is folder, iterate through each frame and then transpose 3D array
-    if os.path.isdir(ifile):
-        all_frames = glob.glob(os.path.join(ifile, '*dcm'))
-        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-                                        axes=(1,2,0)), pixelsize=px_size)
-    else:
-        return Feature(read_single(ifile), pixelsize=px_size)
+	if isinstance(ifile, str):
+		# If input is folder, iterate through each frame and then transpose 3D array
+	    if os.path.isdir(ifile):
+	        all_frames = glob.glob(os.path.join(ifile, '*dcm'))
+	        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
+	                                        axes=(1,2,0)), pixelsize=px_size)
+	    else:
+	        return Feature(read_single(ifile), pixelsize=px_size)
+	# If not string, expect iterable (NumPy array, list, etc.)
+	elif hasattr(ifile, '__iter__'):
+		return Feature(np.transpose(np.array([read_single(frame) for frame in ifile]),
+							axes=(1,2,0)), pixelsize=px_size)
 
 if __name__ == '__main__':
     try:
