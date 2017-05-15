@@ -53,7 +53,7 @@ def read(ifile, **kwds):
 
     if os.path.isdir(ifile):
         # DIR: Iterate through each frame contained in directory
-        all_frames = glob.glob(ifile+'*')
+        all_frames = glob.glob(os.path,join(ifile, '*tif'))
         return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
 								axes=(1,2,0)), pixelsize=px_size)
     else:
