@@ -43,7 +43,7 @@ def read_single(ifile):
 def read(ifile, **kwds):
     """
     Root reading function:
-        - Check if argument is single file (multi or single layer) or directory
+        - Check if argument is single file (multi/single layer), dir, __iter__
         - Call appropriate reader
 		- Tranpose data for upwards-z indexing
         - Initiate Feature class using output numpy array and pixelsize kwd
@@ -51,20 +51,26 @@ def read(ifile, **kwds):
 
     px_size = kwds.get('pixelsize', 1)
 
-    if os.path.isdir(ifile):
-        # DIR: Iterate through each frame contained in directory
-        all_frames = glob.glob(os.path,join(ifile, '*tif'))
-        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-								axes=(1,2,0)), pixelsize=px_size)
-    else:
-        # FILE: Check if file is single or multilayer, read accordingly
-        im = Image.open(ifile)
-        if im.n_frames == 1:
-            arr = read_single(ifile)
-            return Feature(arr, pixelsize=px_size)
+    # If string, can be folder of frames, multilayer tif, or single tif frame
+    if isinstance(ifile, str):
+        if os.path.isdir(ifile):
+            # DIR: Iterate through each frame contained in directory.
+            all_frames = glob.glob(os.path.join(ifile, '*tif'))
+            return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
+    								axes=(1,2,0)), pixelsize=px_size)
         else:
-            arr = read_multilayer(ifile)
-            return Feature(np.transpose(arr, axes=(1,2,0)), pixelsize=px_size)
+            # FILE: Check if file is single or multilayer, read accordingly
+            im = Image.open(ifile)
+            if im.n_frames == 1:
+                arr = read_single(ifile)
+                return Feature(arr, pixelsize=px_size)
+            else:
+                arr = read_multilayer(ifile)
+                return Feature(np.transpose(arr, axes=(1,2,0)), pixelsize=px_size)
+    # If not string, expect iterable (NumPy array, list, etc.)
+    elif hasattr(ifile, '__iter__'):
+        return Feature(np.tranpose(np.array([read_single(frame) for frame in ifile]),
+                        axes=(1,2,0)), pixelsize=px_size)
 
 if __name__ == '__main__':
     try:
