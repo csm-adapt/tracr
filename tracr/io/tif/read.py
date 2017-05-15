@@ -40,28 +40,31 @@ def read_single(ifile):
         im = im.convert('L')
     return np.array(im)
 
-def read(ifile):
+def read(ifile, **kwds):
     """
     Root reading function:
         - Check if argument is single file (multi or single layer) or directory
         - Call appropriate reader
 		- Tranpose data for upwards-z indexing
-        - Initiate Feature class using output numpy array
+        - Initiate Feature class using output numpy array and pixelsize kwd
     """
+
+    px_size = kwds.get('pixelsize', 1)
+
     if os.path.isdir(ifile):
         # DIR: Iterate through each frame contained in directory
         all_frames = glob.glob(ifile+'*')
         return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-								axes=(1,2,0)))
+								axes=(1,2,0)), pixelsize=px_size)
     else:
         # FILE: Check if file is single or multilayer, read accordingly
         im = Image.open(ifile)
         if im.n_frames == 1:
             arr = read_single(ifile)
-            return Feature(arr)
+            return Feature(arr, pixelsize=px_size)
         else:
             arr = read_multilayer(ifile)
-            return Feature(np.transpose(arr, axes=(1,2,0)))
+            return Feature(np.transpose(arr, axes=(1,2,0)), pixelsize=px_size)
 
 if __name__ == '__main__':
     try:
