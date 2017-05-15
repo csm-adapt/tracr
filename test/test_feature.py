@@ -7,6 +7,7 @@ import os, sys, glob
 import numpy as np
 sys.path.append('..')
 from tracr.base.feature import Feature
+from tracr.io.read import read
 
 class TestFeature:
 
@@ -25,3 +26,10 @@ class TestFeature:
         assert type(feat) is Feature, \
             'Feature is of type: {}'.format(type(feat))
         # Assert that warning WAS RAISED
+
+    def test_XCT_layer(self):
+        # Read already expected to return a Feature object, how to send px size?
+        feat = read('testing_data/P002_B001_C04-0.4X_4.83122_0666.tif')
+
+        assert type(feat) is Feature, \
+            'Feature is of type: {}'.format(type(feat))
