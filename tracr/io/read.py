@@ -27,18 +27,39 @@ from .dcm import read as read_dcm
 
 def read(filename, **kwds):
     # If format specified, great (still lower it). If not, we call
-    #   guess_format using a file
-    # Make sure only a single file is sent to the reader
+    #   guess_format using first file in folder.
+
+    # Make sure only a single file is sent to the reader to check format
     if os.path.isdir(filename):
         frame = glob.glob(filename + '*')[0]
         fmt = kwds.get('format', guess_format(frame))
     else:
         fmt = kwds.get('format', guess_format(filename))
+
+    # Check for pixel size keyword. Set to '1' if unspecified
+    px_size = kwds.get('pixelsize', 1)
+
     # Select appropriate reader based on 'fmt' - they will check if file/folder
     if fmt.lower() in ('tif', 'tiff'):
-        return read_tif(filename)
+        return read_tif(filename, pixelsize=px_size)
     elif fmt.lower() in ('dcm', 'dicom'):
-        return read_dcm(filename)
+        return read_dcm(filename, pixelsize=px_size)
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
         raise NotImplementedError(msg)
+
+if __name__ == '__main__':
+    try:
+        # Load inputs and read ifile normally
+        ifile = sys.argv[1]
+        path, base = os.path.split(ifile)
+        intensity_array = read(ifile)
+        try:
+            ofile = sys.argv[2]
+        except IndexError:
+            # Extract path for saving array
+            ofile, ext = os.path.splitext(base)
+        np.save(path+'_'+ofile, intensity_array)
+    except IndexError:
+		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
+		sys.exit(1)
