@@ -23,14 +23,17 @@ from ..base import Feature
 def read_single(ifile):
     return dicom.read_file(ifile).pixel_array
 
-def read(ifile):
+def read(ifile, **kwds):
+	# Get pixelsize passed from general reading function
+	px_size = kwds.get('pixelsize', 1)
+
 	# If input is folder, iterate through each frame and then transpose 3D array
     if os.path.isdir(ifile):
         all_frames = glob.glob(ifile+'*')
         return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-                                        axes=(1,2,0)))
+                                        axes=(1,2,0)), pixelsize=px_size)
     else:
-        return Feature(read_single(ifile))
+        return Feature(read_single(ifile), pixelsize=px_size)
 
 if __name__ == '__main__':
     try:
