@@ -29,7 +29,7 @@ def read(ifile, **kwds):
 
 	# If input is folder, iterate through each frame and then transpose 3D array
     if os.path.isdir(ifile):
-        all_frames = glob.glob(ifile+'*')
+        all_frames = glob.glob(os.path.join(ifile, '*dcm'))
         return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
                                         axes=(1,2,0)), pixelsize=px_size)
     else:
