@@ -24,9 +24,14 @@ def read_single(ifile):
 
 def read(ifile, **kwds):
 	# ifile is a list, generate Feature object by iterating through list
+	# Pixelsize must be function input (not kwd) by the time we call 'Feature'.
 	arr = np.transpose(np.array([read_single(frame) for frame in ifile]),
 						axes=(1,2,0))
-	return Feature(arr, pixelsize=kwds['pixelsize'])
+	if 'pixelsize' in kwds:
+		px_size = kwds['pixelsize']
+	else:
+		px_size = 1000*float(dicom.read_file(ifile[0]).PixelSpacing[0])
+	return Feature(arr, pixelsize=px_size)
 
 if __name__ == '__main__':
     try:
