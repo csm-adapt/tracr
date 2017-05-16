@@ -6,8 +6,6 @@ FOR NOW: Running test on 2D sample, will scale up to data shortly
 import os, sys, glob
 sys.path.append('..')
 from tracr.io.read import read
-from tracr.io.tif import read as readTIF
-from tracr.io.dcm import read as readDCM
 from matplotlib import pyplot as plt
 
 # Only using single files for now, not desirable to store huge folders
@@ -47,7 +45,7 @@ class TestReadTIF:
 class TestReadDCM:
     def test_singleDCM(self):
         data = 'testing_data/P002_B001_C04-0.4X_4.83122um_.dcm0666.dcm'
-        feat = readALL(data)
+        feat = read(data)
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature, \
@@ -60,7 +58,7 @@ class TestReadDCM:
 
     def test_singleDCM_px(self):
         data = 'testing_data/P002_B001_C04-0.4X_4.83122um_.dcm0666.dcm'
-        feat = readALL(data, pixelsize=4.5)
+        feat = read(data, pixelsize=4.5)
 
         # Make assertions, tests, etc.
         assert type(feat) is Feature, \
