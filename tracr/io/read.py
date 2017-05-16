@@ -51,17 +51,11 @@ def read(ifile, **kwds):
     # Select appropriate reader based on 'fmt' - Check for specified pixelsize
     fmt = formats[0].lower()
     if fmt in ('tif', 'tiff'):
-        tif_kwds = {}
-        if 'pixelsize' in kwds:
-            tif_kwds['pixelsize'] = kwds['pixelsize']
-        return read_tif(filenames, **tif_kwds)
+        return read_tif(filenames, **kwds)
 
     elif fmt in ('dcm', 'dicom'):
-        dcm_kwds = {}
-        if 'pixelsize' in kwds:
-            dcm_kwds['pixelsize'] = kwds['pixelsize']
         return read_dcm(filenames, **dcm_kwds)
-        
+
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
         raise NotImplementedError(msg)
