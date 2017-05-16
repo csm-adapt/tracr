@@ -20,6 +20,7 @@ USAGE:
 """
 
 import os
+import dicom
 import logging
 logging.basicConfig(filename='feature.log', level=logging.DEBUG)
 from .util import guess_format
@@ -47,20 +48,24 @@ def read(ifile, **kwds):
         msg = 'More than one file format found in {}'.format(filenames[0])
         raise IOError(msg)
 
-    # Check for specified pixelsize, warn if not specified.
-    try:
-        px_size = kwds['pixelsize']
-    except KeyError:
-        msg = 'Pixel size was not specified and is not provided in {}. ' \
-                'Default to 1.'.format(filenames[0])
-        print msg
-        px_size = 1.0
-
-    # Select appropriate reader based on 'fmt' - they will check if file/folder.
-    # 'pixelsize' is a set **kwds argument from here on out.
-    if fmt.lower() in ('tif', 'tiff'):
+    # Select appropriate reader based on 'fmt' - Set pixelsize here.
+    fmt = formats[0].lower()
+    if fmt in ('tif', 'tiff'):
+        try:
+            px_size = kwds['pixelsize']
+        except KeyError:
+            msg = 'Pixel size not specified/provided in {}. ' \
+                    'Default to 1 um/pixel.'.format(filenames[0])
+            logging.warning(msg)
+            px_size = 1.0
         return read_tif(filenames, pixelsize=px_size)
-    elif fmt.lower() in ('dcm', 'dicom'):
+    elif fmt in ('dcm', 'dicom'):
+        try:
+            px_size = kwds['pixelsize']
+        except KeyError:
+            px_size = 1000*float(dicom.read_file(filenames[0]).PixelSpacing[0])
+            msg = 'Pixel size not specified for {}' \
+                    'Assuming size of {} um/pixel.'.format(filenames[0], px_size)
         return read_dcm(filenames, pixelsize=px_size)
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
