@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 """
-Converts TIF format files/dirs into a numpy format intensity voxel array.
-3D arrays are transposed such that the 'z'direction of the array is also 'up'
-in the uXCT machine frame.
+Converts TIF format data to a Feature object.
 
 INPUT:
-    - .tif file (either single or multilayer), or folder of .tif frames
+    - List of either single/multi layer tif file, or list of individual files
+    - pixelsize has been set as a **kwds argument as per tracr.io.read
 
 OUTPUT:
-    - Numpy array (either 2D or 3D) of intensity data
+    - Feature object
 
 USAGE:
-    e.g. intensity_array = read('path/to/data.tif')
-    e.g. intensity_array = read('path/to/TIF_folder/')
+    e.g. feat = read(glob.glob()'path/to/dataFolder/*tif'), pixelsize=px_size)
+    e.g. feat = read('path/to/tifFrame', pixelsize=px_size)
+    * pixelsize has been set in general reading function.
 """
 
 import sys, os, glob
@@ -33,7 +33,7 @@ def read_single(ifile):
     """
     File reader for single file, single layer TIF images (2D data). We also
     ensure that RGB images are greyscale before converting (ITU-R 601-2).
-    e.g. 'sampleX.tif'
+    e.g. 'frameX.tif'
     """
     im = Image.open(ifile)
     if im.mode in ('RGB', 'RGBA'):
@@ -43,34 +43,27 @@ def read_single(ifile):
 def read(ifile, **kwds):
     """
     Root reading function:
-        - Check if argument is single file (multi/single layer), dir, __iter__
+        - Check if list is single file (multi/single layer), or list of frames
         - Call appropriate reader
 		- Tranpose data for upwards-z indexing
         - Initiate Feature class using output numpy array and pixelsize kwd
     """
-
-    px_size = kwds.get('pixelsize', 1)
-
-    # If string, can be folder of frames, multilayer tif, or single tif frame
-    if isinstance(ifile, str):
-        if os.path.isdir(ifile):
-            # DIR: Iterate through each frame contained in directory.
-            all_frames = glob.glob(os.path.join(ifile, '*tif'))
-            return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-    								axes=(1,2,0)), pixelsize=px_size)
+    # If only single file, either singlelayer or multilayer tif
+    if len(ifile) == 1:
+        im = Image.open(ifile[0])
+        # Check if single or multilayer
+        if im.n_frames == 1:
+            arr = read_single(ifile[0])
+            return Feature(arr, pixelsize=kwds['pixelsize'])
         else:
-            # FILE: Check if file is single or multilayer, read accordingly
-            im = Image.open(ifile)
-            if im.n_frames == 1:
-                arr = read_single(ifile)
-                return Feature(arr, pixelsize=px_size)
-            else:
-                arr = read_multilayer(ifile)
-                return Feature(np.transpose(arr, axes=(1,2,0)), pixelsize=px_size)
-    # If not string, expect iterable (NumPy array, list, etc.)
-    elif hasattr(ifile, '__iter__'):
-        return Feature(np.tranpose(np.array([read_single(frame) for frame in ifile]),
-                        axes=(1,2,0)), pixelsize=px_size)
+            arr = np.transpose(read_multilayer[ifile[0]], axes=(1,2,0))
+            return Feature(arr, pixelsize=kwds['pixelsize'])
+    # Must be list of multiple frames
+    else:
+        arr = np.transpose(np.array([read_single(frame) for frame in ifile]),
+                            axes=(1,2,0))
+        return Feature(arr, pixelsize=kwds['pixelsize'])
+
 
 if __name__ == '__main__':
     try:
