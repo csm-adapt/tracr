@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Converts .dcm format data to a Feature object. 
+Converts .dcm format data to a Feature object.
 
 INPUT:
 	- List of single dcm frame, or list of multiple frames
@@ -24,7 +24,7 @@ def read_single(ifile):
 
 def read(ifile, **kwds):
 	# ifile is a list, generate Feature object by iterating through list
-	arr = np.transpose(np.array([read_single_dcm(frame) for frame in ifile]),
+	arr = np.transpose(np.array([read_single(frame) for frame in ifile]),
 						axes=(1,2,0))
 	return Feature(arr, pixelsize=kwds['pixelsize'])
 
