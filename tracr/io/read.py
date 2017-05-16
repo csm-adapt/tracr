@@ -60,13 +60,10 @@ def read(ifile, **kwds):
             px_size = 1.0
         return read_tif(filenames, pixelsize=px_size)
     elif fmt in ('dcm', 'dicom'):
-        try:
-            px_size = kwds['pixelsize']
-        except KeyError:
-            px_size = 1000*float(dicom.read_file(filenames[0]).PixelSpacing[0])
-            msg = 'Pixel size not specified for {}' \
-                    'Assuming size of {} um/pixel.'.format(filenames[0], px_size)
-        return read_dcm(filenames, pixelsize=px_size)
+        dcm_kwds = {}
+        if 'pixelsize' in kwds:
+            dcm_kwds['pixelsize'] = kwds['pixelsize']
+        return read_dcm(filenames, **dcm_kwds)
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
         raise NotImplementedError(msg)
