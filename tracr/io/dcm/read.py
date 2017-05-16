@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 """
-A script that converts DCM formatted data into a numpy array of intensity
-values. Iteratively processes each .dcm layer at a time (no multilayer).
-Output 3D arrays are transposed for z-upward indexing.
+Converts .dcm format data to a Feature object. 
 
 INPUT:
-	- Either a single .dcm file or folder of .dcm frames
+	- List of single dcm frame, or list of multiple frames
+	- * pixelsize set in tracr.io.read
 
 OUTPUT:
 	- Feature object (array (either 2D or 3D) of .dcm intensity data).
@@ -24,21 +23,10 @@ def read_single(ifile):
     return dicom.read_file(ifile).pixel_array
 
 def read(ifile, **kwds):
-	# Get pixelsize passed from general reading function
-	px_size = kwds.get('pixelsize', 1)
-
-	if isinstance(ifile, str):
-		# If input is folder, iterate through each frame and then transpose 3D array
-	    if os.path.isdir(ifile):
-	        all_frames = glob.glob(os.path.join(ifile, '*dcm'))
-	        return Feature(np.transpose(np.array([read_single(frame) for frame in all_frames]),
-	                                        axes=(1,2,0)), pixelsize=px_size)
-	    else:
-	        return Feature(read_single(ifile), pixelsize=px_size)
-	# If not string, expect iterable (NumPy array, list, etc.)
-	elif hasattr(ifile, '__iter__'):
-		return Feature(np.transpose(np.array([read_single(frame) for frame in ifile]),
-							axes=(1,2,0)), pixelsize=px_size)
+	# ifile is a list, generate Feature object by iterating through list
+	arr = np.transpose(np.array([read_single_dcm(frame) for frame in ifile]),
+						axes=(1,2,0))
+	return Feature(arr, pixelsize=kwds['pixelsize'])
 
 if __name__ == '__main__':
     try:
