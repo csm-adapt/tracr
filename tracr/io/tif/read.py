@@ -16,6 +16,7 @@ USAGE:
 """
 
 import sys, os, glob
+import logging
 import numpy as np
 from PIL import Image, ImageSequence
 from ..base import Feature
@@ -48,21 +49,32 @@ def read(ifile, **kwds):
 		- Tranpose data for upwards-z indexing
         - Initiate Feature class using output numpy array and pixelsize kwd
     """
+    
+    # Check if pixelsize is user-specified or not. Default: set to 1.
+    if 'pixelsize' in kwds:
+        px_size = kwds['pixelsize']
+        # Log this information
+    else:
+        px_size = 1.0
+        msg = 'Pixel size was not specified and is not provided in {}.' \
+                'Default to 1 um/pixel.'
+        logging.warning(msg)
+
     # If only single file, either singlelayer or multilayer tif
     if len(ifile) == 1:
         im = Image.open(ifile[0])
         # Check if single or multilayer
         if im.n_frames == 1:
             arr = read_single(ifile[0])
-            return Feature(arr, pixelsize=kwds['pixelsize'])
+            return Feature(arr, pixelsize=px_size)
         else:
             arr = np.transpose(read_multilayer[ifile[0]], axes=(1,2,0))
-            return Feature(arr, pixelsize=kwds['pixelsize'])
+            return Feature(arr, pixelsize=px_size)
     # Must be list of multiple frames
     else:
         arr = np.transpose(np.array([read_single(frame) for frame in ifile]),
                             axes=(1,2,0))
-        return Feature(arr, pixelsize=kwds['pixelsize'])
+        return Feature(arr, pixelsize=px_size)
 
 
 if __name__ == '__main__':
