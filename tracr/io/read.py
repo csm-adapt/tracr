@@ -54,7 +54,7 @@ def read(ifile, **kwds):
         return read_tif(filenames, **kwds)
 
     elif fmt in ('dcm', 'dicom'):
-        return read_dcm(filenames, **dcm_kwds)
+        return read_dcm(filenames, **kwds)
 
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
