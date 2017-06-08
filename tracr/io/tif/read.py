@@ -20,7 +20,7 @@ from warnings import warn
 import logging
 import numpy as np
 from PIL import Image, ImageSequence
-from ..base import Feature
+from ...base import Feature
 
 def read_multilayer(ifile):
     """
@@ -78,20 +78,3 @@ def read(ifile, **kwds):
         arr = np.array([read_single(frame) for frame in ifile])
         arr = np.transpose(arr, axes=(1,2,0))
         return Feature(arr, pixelsize=px_size)
-
-
-if __name__ == '__main__':
-    try:
-        # Load inputs and read ifile normally
-        ifile = sys.argv[1]
-        path, base = os.path.split(ifile)
-        intensity_array = read(ifile)
-        try:
-            ofile = sys.argv[2]
-        except IndexError:
-            # Extract path for saving array
-            ofile, ext = os.path.splitext(base)
-        np.save(path+'_'+ofile, intensity_array)
-    except IndexError:
-		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
-		sys.exit(1)

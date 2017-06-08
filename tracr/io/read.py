@@ -59,19 +59,3 @@ def read(ifile, **kwds):
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
         raise NotImplementedError(msg)
-
-if __name__ == '__main__':
-    try:
-        # Load inputs and read ifile normally
-        ifile = sys.argv[1]
-        path, base = os.path.split(ifile)
-        intensity_array = read(ifile)
-        try:
-            ofile = sys.argv[2]
-        except IndexError:
-            # Extract path for saving array
-            ofile, ext = os.path.splitext(base)
-        np.save(path+'_'+ofile, intensity_array)
-    except IndexError:
-		sys.stderr.write('CL Usage: python {} [path/to/ifile] [ofile_name]'.format(sys.argv[0]))
-		sys.exit(1)
