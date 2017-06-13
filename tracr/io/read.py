@@ -26,6 +26,7 @@ logging.basicConfig(filename='feature.log', level=logging.DEBUG)
 from .util import guess_format
 from .tif import read as read_tif
 from .dcm import read as read_dcm
+from .hdf5 import read as read_hdf5
 
 def read(ifile, **kwds):
     # Determine whether input is file or list of files, and ensure output is list
@@ -55,6 +56,9 @@ def read(ifile, **kwds):
 
     elif fmt in ('dcm', 'dicom'):
         return read_dcm(filenames, **kwds)
+
+    elif fmt in ('hdf5'):
+        return read_hdf5(filenames, **kwds)
 
     else:
         msg = '{} is not a recognized input format.'.format(fmt)
