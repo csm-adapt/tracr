@@ -6,6 +6,7 @@ by further attributing: label count, volumes, COMs, etc.
 # Will add more thresholding schemes once we clean up thresholding functions:
 import numpy as np
 import logging
+from warnings import warn
 logging.basicConfig(filename='feature.log', level=logging.DEBUG)
 
 class Feature(np.ndarray):
@@ -19,7 +20,11 @@ class Feature(np.ndarray):
         if 'pixelsize' not in kwds:
             msg = "'pixelsize' was not set when Feature object was created. " \
                 "A pixel size of 1 is assumed for all calculations (pixel dim's)."
-            logging.warning(msg)
+            warn(msg)
+
+        # Record pixelsize in log file
+        obj.pixelsize = kwds.get('pixelsize', 1)
+        logging.info("Pixel size: {} um".format(obj.pixelsize))
         return obj
 
     def __array_finalize__(self, obj):
@@ -28,4 +33,4 @@ class Feature(np.ndarray):
         # instance is actually created (i.e. when `__new__` is called)
         if obj is None:
             return
-        self.pixelsize = getattr(obj, 'pixelsize', 1)
+        #self.pixelsize = getattr(obj, 'pixelsize', 1)
