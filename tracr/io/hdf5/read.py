@@ -45,12 +45,13 @@ from ...base import Feature
 def read(ifile, **kwds):
     """
     Root reading function:
-        Assume single file hdf5 file,
+        Assume single file hdf5 file, iterate through list.
     """
-    with h5py.File(ifile, 'r') as hdf:
-        dset = hdf['tomograph']
-        arr = np.transpose(dset[:], axes=(1,2,0))
-        if 'pixel size' in dset.attrs.keys():
-            return Feature(arr, pixelsize=dset.attrs['pixel size'])
-        else:
-            return Feature(arr)
+    for sample in ifile:
+        with h5py.File(sample, 'r') as hdf:
+            dset = hdf['tomograph']
+            arr = np.transpose(dset[:], axes=(1,2,0))
+            if 'pixel size' in dset.attrs.keys():
+                return Feature(arr, pixelsize=dset.attrs['pixel size'])
+            else:
+                return Feature(arr)

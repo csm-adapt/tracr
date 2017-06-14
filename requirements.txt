@@ -2,6 +2,7 @@ appdirs==1.4.3
 cycler==0.10.0
 decorator==4.0.11
 functools32==3.2.3.post2
+h5py==2.7.0
 matplotlib==2.0.0
 networkx==1.11
 numpy==1.12.1

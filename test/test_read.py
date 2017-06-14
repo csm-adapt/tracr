@@ -29,6 +29,10 @@ def tif_frame():
 def dcm_frame():
     return 'testing_data/P002_B001_C04-0.4X_4.83122um_.dcm0666.dcm'
 
+@pytest.fixture(scope="module")
+def hdf5_frame():
+    return 'testing_data/P002_B001_Y23-0.4X_final.hdf5'
+
 # Only using single files for now, not desirable to store huge folders
 class TestReadTIF:
 
@@ -60,7 +64,15 @@ class TestReadDCM:
             'Checksum of Feature is: {} ' \
             '(should be 9953421973)'.format(np.sum(feat))
         assert hasattr(feat, 'pixelsize'), 'No pixelsize attribute'
-        assert feat.pixelsize == 1.0, 'Pixel size not set to 1'
+        assert feat.pixelsize == 4.831, 'Pixel size not set to 1'
 
 
-    # Insert dcm list reading tests
+class TestReadHDF5:
+    def test_hdf5(self, hdf5_frame):
+        # No pixel size here
+        feat = read(hdf5_frame)
+        # Make assertions, tests, etc.
+        assert isinstance(feat, Feature), \
+            'Feature is of type: {}'.format(type(feat))
+        assert hasattr(feat, 'pixelsize'), 'No pixelsize attribute'
+        assert feat.pixelsize == 4.8920965127763338, "Wrong pixel size"

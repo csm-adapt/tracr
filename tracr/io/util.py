@@ -1,12 +1,12 @@
 """
 File reading tools for decomposing input file name. Returns format string
-depending on extension (either '.tif/.tiff' or '.dcm/.dicom').
+depending on extension (either '.tif/.tiff', '.hdf5', or '.dcm/.dicom').
 
 INPUT:
     - string containing file name (presumably not folder due to ./read.py)
 
 OUTPUT:
-    - string declaring extension (tif or dcm)
+    - string declaring extension (tif, dcm, or hdf5)
 """
 
 import os
@@ -21,6 +21,8 @@ def guess_format(filename):
         return 'tif'
     elif ext in ('.dcm', '.dicom'):
         return 'dcm'
+    elif ext in ('.hdf5'):
+        return 'hdf5'
     else:
         msg = 'Could not guess the format of {}.'.format(filename)
         raise IOError(msg)
@@ -36,4 +38,3 @@ def guess_format(filename):
 #     else:
 #         msg = '{} format is not a recognized format.'.format(fmt)
 #         raise IOError(msg)
-
