@@ -6,6 +6,24 @@ INPUT
 =====
     Single multilayer hdf5 file of raw intensity data
 
+    The assumed structure of the HDF5 file is:
+    GROUP "/" {
+        DATASET "tomograph" {
+            DATATYPE numeric
+            ATTRIBUTE "pixel size" {
+                DATATYPE float
+            }
+            ATTRIBUTE "pixel units" {
+                DATATYPE string
+            }
+        }
+    }
+
+By default, the "tomograph" dataset is tranposed from
+`[layer, width, height]` order to `[x, y, z]`, where
+`x <- width`, `y <- height` and `z <- layer`.
+
+
 OUTPUT
 ======
     Feature object
