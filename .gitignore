@@ -49,6 +49,7 @@ coverage.xml
 *.csv
 *.tif
 *.pdf
+*.hdf5
 *.json
 *.ipynb
 *.dcm
