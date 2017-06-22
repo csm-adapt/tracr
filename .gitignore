@@ -1,3 +1,8 @@
+# Files we don't want to store in the repo because they
+# can be huge. These data should be made available through
+# a shared large-file service.
+test/testing_data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
