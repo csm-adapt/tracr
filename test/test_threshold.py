@@ -11,7 +11,6 @@ from skimage import data
 
 # NOT YET A TEST - JUST SETUP FOR TOY DATASET
 def test_bilevel_random():
-
     plt.close()
     # Build vector with two Gaussian humps
     a = 50
@@ -30,7 +29,6 @@ def test_bilevel_random():
     plt.show()
 
 def test_bilevel_camera():
-
     cam = data.camera()
     thresh_val = otsu(cam.flatten())
 
