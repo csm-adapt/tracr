@@ -5,7 +5,7 @@ Test script for TRACR Otsu multilevel thresholding algorithm.
 import os, sys, glob
 import numpy as np
 sys.path.append('..')
-from tracr.segmentation.threshold import otsu
+from tracr.segmentation.threshold.multilevel import otsu
 from matplotlib import pyplot as plt
 from skimage import data
 
