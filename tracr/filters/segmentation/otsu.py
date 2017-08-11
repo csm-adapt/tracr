@@ -1,18 +1,10 @@
 import numpy as np
 from itertools import combinations
+from .threshold import register_threshold
+from skimage.filters import threshold_otsu as skimage_otsu
 
-# # ----- set up logging -----
-# import logging
-# logger = logging.getLogger('multilevel-otsu')
-# ch = logging.StreamHandler() # create console handler
-# ch.setLevel(logging.DEBUG)
-# formatter = logging.Formatter(
-#     '%(asctime)s - %(name)s - %(levelname)s - %(message)s') # create a formatter
-# ch.setFormatter(formatter)
-# logger.addHandler(ch) # add console handler to logger
-# # ----- end set up logging -----
-
-def otsu(image, nclasses=2, nbins=256):
+@register_threshold
+def tracr_otsu(image, nclasses=2, nbins=256): # otsu implementation
     """
     Calculates the threshold levels for an image using the multilevel
     otsu implementation from Deng-Yuan Huang and Chia-Hung Wang,
@@ -72,3 +64,17 @@ def otsu(image, nclasses=2, nbins=256):
             thresholds = tuple((edges[i] + edges[i+1])/2.
                                for i in ijk[1:-1])
     return thresholds
+
+
+@register_threshold
+def otsu(*args, **kwds):
+    """Otsu wrapper..."""
+    method = {
+        'skimage' : skimage_otsu,
+        'tracr' : tracr_otsu
+    }.get(
+        kwds.get('method', tracr_otsu),
+        kwds.get('method', tracr_otsu))
+    if 'method' in kwds:
+        del kwds['method']
+    return method(*args, **kwds)
