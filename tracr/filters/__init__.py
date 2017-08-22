@@ -1,1 +1,1 @@
-from .threshold import threshold
+from .segmentation import threshold

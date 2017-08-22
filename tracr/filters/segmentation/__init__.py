@@ -1,5 +1,5 @@
 from .otsu import tracr_otsu
-from ..threshold import register_threshold
+from .threshold import register_threshold
 
 # simple wrappers
 from skimage.filters import (

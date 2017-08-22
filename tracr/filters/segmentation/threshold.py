@@ -1,5 +1,5 @@
-import .segmentation
-from .segmentation import otsu
+#import .segmentation
+import otsu
 
 THRESHOLDS_ = {}
 
