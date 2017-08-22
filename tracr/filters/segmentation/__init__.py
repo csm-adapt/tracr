@@ -8,8 +8,8 @@ from skimage.filters import (
     threshold_li as skimage_li,
     threshold_adaptive as skimage_adaptive
 )
-register_threshold(tracr_otsu)
+#register_threshold(tracr_otsu)
 register_threshold(skimage_otsu)
 register_threshold(skimage_yen)
-register_threshold(skimage_yi)
+register_threshold(skimage_li)
 register_threshold(skimage_adaptive)
