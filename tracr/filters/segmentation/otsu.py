@@ -4,7 +4,7 @@ from .threshold import register_threshold
 from skimage.filters import threshold_otsu as skimage_otsu
 
 @register_threshold
-def tracr_otsu(image, nclasses=2, nbins=256): # otsu implementation
+def tracr_otsu(image, nclasses=2, nbins=256, *args): # otsu implementation
     """
     Calculates the threshold levels for an image using the multilevel
     otsu implementation from Deng-Yuan Huang and Chia-Hung Wang,
@@ -31,6 +31,9 @@ def tracr_otsu(image, nclasses=2, nbins=256): # otsu implementation
     """
     # ensure the image is a numpy array-like
     image = np.asarray(image)
+    # trim off zero intensities (usually in frame corners) if desired
+    if 'trim' in args:
+        image = image[np.nonzero(image)]    
     # calculate the histogram of intensities
     prob, edges = np.histogram(image.flatten(), bins=nbins, density=True)
     nbins = len(prob)
