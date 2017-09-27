@@ -1,20 +1,21 @@
 from scipy.ndimage.measurements import center_of_mass
-from ..structures import Porosity
 
 
-def com(obj):
-    """
-    Finds the center of mass of the object defined by OBJ.
-    """
-    # check for optimized implementations
-    if isinstance(obj, Porosity):
-        return pore_com(obj)
-    else:
-        # fall back on a default
-        return np.mean(np.where(mask).T, axis=0)
+def com(arr, larr):
 
+"""
+INPUT
+=====
+    arr (ndarray): Array of ra intensity data. Shape must match 'larr'.
+    larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
+                    cluster for passed material (background).
 
-def pore_com(porosity):
-    # INPUT: porosity object
-    # OUTPUT: list of COM coordinates
-    return center_of_mass(porosity.array, porosity.labels)
+OUTPUT
+======
+    coms (list): An 'num+1' length list of labeled cluster centroids. This
+                    includes the '0' cluster (passed signal).
+
+"""
+    num = larr.max()
+    coms = center_of_mass(arr, larr, range(num+1))
+    return coms
