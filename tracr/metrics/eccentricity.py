@@ -2,21 +2,6 @@ from __future__ import division
 import sys, os
 import numpy
 
-
-"""
-INPUT
-=====
-    larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
-                    cluster for passed material (background).
-
-OUTPUT
-======
-    sigmas (ndarray): An mxn array of sigma values describing scaling in each
-                        feature's principal direction.
-
-
-"""
-
 def svd(coords):
     # center the coordinates at the origin — required for SVD
     center = np.mean(coords, axis=0)
@@ -25,7 +10,20 @@ def svd(coords):
     u,s,v = np.linalg.svd(new_coords, full_matrices=False)
     return u, np.diag(s), np.transpose(v)
 
-def eccentricity(larr)
+def eccentricity(larr):
+
+    """
+    INPUT
+    =====
+        larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
+                        cluster for passed material (background).
+
+    OUTPUT
+    ======
+        sigmas (ndarray): An mxn array of sigma values describing scaling in each
+                            feature's principal direction.
+    """
+    
     num = np.max(larr)
     dims = len(larr.shape)
     sigmas = np.zeros((num-1, dims))
