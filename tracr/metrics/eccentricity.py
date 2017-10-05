@@ -32,7 +32,7 @@ def eccentricity(larr)
 
     for f in range(1,num):
         coords = np.argwhere(lbl==f).astype(float)
-        if len(coords) > 1:
+        if len(coords) >= dims:
             u,s,v = svd(coords)
             for sig in range(dims):
                 sigmas[f,sig] = np.sqrt(s[sig,sig])
