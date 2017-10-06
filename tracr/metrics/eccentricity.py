@@ -20,18 +20,17 @@ def eccentricity(larr):
 
     OUTPUT
     ======
-        sigmas (ndarray): An mxn array of sigma values describing scaling in each
-                            feature's principal direction.
+        ecc (ndarray): An num x 1 array of ratios of the lowest/highest sigmas
+                        for each feature in labeled array.
     """
-    
+
     num = np.max(larr)
     dims = len(larr.shape)
-    sigmas = np.zeros((num-1, dims))
+    ecc = np.zeros((num-1, 1))
 
-    for f in range(1,num):
+    for f in range(1,num+1):
         coords = np.argwhere(lbl==f).astype(float)
         if len(coords) >= dims:
             u,s,v = svd(coords)
-            for sig in range(dims):
-                sigmas[f,sig] = np.sqrt(s[sig,sig])
-    return sigmas
+            ecc[f] = np.sqrt(s[-1,-1]/s[0,0])
+    return ecc
