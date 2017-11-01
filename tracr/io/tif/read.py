@@ -71,7 +71,7 @@ def read(ifile, **kwds):
             arr = read_single(ifile[0])
             return Feature(arr, pixelsize=px_size)
         else:
-            arr = np.transpose(read_multilayer[ifile[0]], axes=(1,2,0))
+            arr = np.transpose(read_multilayer(ifile[0]), axes=(1,2,0))
             return Feature(arr, pixelsize=px_size)
     # Must be list of multiple frames
     else:
