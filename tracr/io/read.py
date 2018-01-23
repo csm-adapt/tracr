@@ -9,6 +9,7 @@ contained files are listed sequentially. Unspecified pixel size is set to 1.
 INPUT:
     - TIF: file (single or multilayer), or user specified list of frames
     - DICOM: file (single), or list of dcm frames
+    - HDF5: file, assumes a 'tomograph' dataset, may use 'pixel size' also
 
 OUTPUT:
     - Feature object of intensity data. See specific readers for more.
