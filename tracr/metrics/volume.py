@@ -6,12 +6,12 @@ def volume(larr):
     """
     INPUT
     =====
-        larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
+        - larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
                         cluster for passed material (background).
 
     OUTPUT
     ======
-        vols (list): An 'n+1' list of voxel volumes corresponding to labels from 'arr'.
+        - vols (list): An 'n+1' list of voxel volumes corresponding to labels from 'arr'.
 
     """
     num = larr.max()

@@ -16,12 +16,12 @@ def eccentricity(larr):
     """
     INPUT
     =====
-        larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
+        - larr (ndarray): A labeled array with 'num' clusters of integer values and '0'
                         cluster for passed material (background).
 
     OUTPUT
     ======
-        ecc (ndarray): An num x 1 array of ratios of the lowest/highest sigmas
+        - ecc (ndarray): An num x 1 array of ratios of the lowest/highest sigmas
                         for each feature in labeled array.
     """
 
@@ -29,9 +29,24 @@ def eccentricity(larr):
     dims = len(larr.shape)
     ecc = np.zeros((num-1, 1))
 
-    for f in range(1,num+1):
-        coords = np.argwhere(lbl==f).astype(float)
-        if len(coords) >= dims:
-            u,s,v = svd(coords)
-            ecc[f] = np.sqrt(s[-1,-1]/s[0,0])
-    return ecc
+    if dims == 2:
+        for f in range(1,num+1):
+            coords = np.argwhere(lbl==f).astype(float)
+            if len(coords) >= dims:
+                u,s,v = svd(coords)
+                s1 = np.sqrt(s[0,0])
+                s2 = np.sqrt(s[1,1])
+                ecc[f] = 1 - s2/s1
+        return ecc
+    elif dims == 3:
+        for f in range(1,num+1):
+            coords = np.argwhere(lbl==f).astype(float)
+            if len(coords) >= dims:
+                u,s,v = svd(coords)
+                s1 = np.sqrt(s[0,0])
+                s2 = np.sqrt(s[1,1])
+                s3 = np.sqrt(s[2,2])
+                ecc[f] = 0.5*((1-sc2/sc1) + (1-sc3/sc1))
+        return ecc
+    else:
+        raise IndexError('Dimension of dataset is not either 2 or 3.')           
