@@ -4,7 +4,7 @@ Converts HDF5 format data to a Feature object.
 
 INPUT
 =====
-    Single multilayer hdf5 file of raw intensity data
+    - ifile (list): single multilayer hdf5 file of raw intensity data
 
     The assumed structure of the HDF5 file is:
     GROUP "/" {
@@ -26,7 +26,7 @@ By default, the "tomograph" dataset is tranposed from
 
 OUTPUT
 ======
-    Feature object
+    - Feature object
 
 USAGE
 =====
@@ -49,7 +49,11 @@ def read(ifile, **kwds):
     """
     for sample in ifile:
         with h5py.File(sample, 'r') as hdf:
-            dset = hdf['tomograph']
+            try:
+                dset = hdf['tomograph']
+            except KeyError:
+                msg = "'tomograph' dataset not found."
+                raise KeyError(msg)
             arr = np.transpose(dset[:], axes=(1,2,0))
             if 'pixel size' in dset.attrs.keys():
                 return Feature(arr, pixelsize=dset.attrs['pixel size'])
