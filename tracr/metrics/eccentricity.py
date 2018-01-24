@@ -49,4 +49,4 @@ def eccentricity(larr):
                 ecc[f] = 0.5*((1-sc2/sc1) + (1-sc3/sc1))
         return ecc
     else:
-        raise IndexError('Dimension of dataset is not either 2 or 3.')           
+        raise IndexError('Dimension of dataset is neither 2 or 3.')
