@@ -23,6 +23,7 @@ def tracr_otsu(image, nclasses=2, nbins=256, *args): # otsu implementation
     :nbins, int: (optional) A histogram of *nbins* will be made from the
         intensity values in *image*. This provides the number of bins in
         that histogram. Default: 256
+    :'trim', (optional) ignores nonzero entries of dataset
 
 
     Output
@@ -33,7 +34,7 @@ def tracr_otsu(image, nclasses=2, nbins=256, *args): # otsu implementation
     image = np.asarray(image)
     # trim off zero intensities (usually in frame corners) if desired
     if 'trim' in args:
-        image = image[np.nonzero(image)]    
+        image = image[np.nonzero(image)]
     # calculate the histogram of intensities
     prob, edges = np.histogram(image.flatten(), bins=nbins, density=True)
     nbins = len(prob)
