@@ -3,7 +3,7 @@
 Converts .dcm format data to a Feature object.
 
 INPUT:
-	- List of single dcm frame, or list of multiple frames
+	- ifile: List of single dcm frame, or list of multiple frames
 	- **pixelsize (um/pixel)
 
 OUTPUT:

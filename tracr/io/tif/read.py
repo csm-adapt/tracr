@@ -3,8 +3,8 @@
 Converts TIF format data to a Feature object.
 
 INPUT:
-    - List of either single/multi layer tif file, or list of individual files
-    - pixelsize has been set as a **kwds argument as per tracr.io.read
+    - ifile: List of either single/multi layer tif file, or list of individual files
+    - **pixelsize has been set as a **kwds argument as per tracr.io.read
 
 OUTPUT:
     - Feature object
