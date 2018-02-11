@@ -38,7 +38,7 @@ def read(ifile, **kwds):
     except TypeError:
         # Input is a user-specified list of frames
         if hasattr(ifile, '__iter__'):
-            filenames = ifile
+            filenames = sorted(ifile)
         else:
             raise
 
